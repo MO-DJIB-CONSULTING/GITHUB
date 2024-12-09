@@ -1,0 +1,432 @@
+---
+title: "FPSA"
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: console
+---
+
+```{r, message=FALSE, warning=FALSE}
+# Load necessary libraries
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(corrplot)
+library(cluster)
+library(factoextra)
+library(pheatmap)
+library(irlba)
+library(Rtsne)
+library(tidyr)
+library(viridis)
+library(heatmaply)
+
+
+# Loading the data
+
+data_1_final <- read_excel("C:/Users/T0087231/Videos/data-1 final.xlsx")
+View(data_1_final)
+data_1_final
+
+str(data_1_final)
+head(data_1_final)
+```
+
+#  Part 1: Comparison of FPSA with Age, Prostate Size, and ACT
+
+## Correlation Analysis
+```{r, message=FALSE, warning=FALSE}
+
+# 1. Compute the correlation matrix
+selected_columns <- data_1_final %>% select(`fPSA ng/ml`, age, `P. size`, ACT)
+cor_matrix <- cor(selected_columns, use = "pairwise.complete.obs")
+
+# Display the correlation matrix
+print(cor_matrix)
+
+# Visualize the correlation matrix with coefficients
+corrplot(
+  cor_matrix, 
+  method = "circle", 
+  type = "upper", 
+  title = "Correlation Matrix: FPSA vs Clinical Variables",
+  tl.cex = 0.8, 
+  mar = c(0, 0, 2, 0),
+  addCoef.col = "black"  # Show coefficients on the plot
+)
+
+```
+
+## Linear Regression Analysis
+For each variable (age, prostate size, and ACT), we perform linear regression to assess their relationship with FPSA. Coefficients and p-values are extracted and interpreted.
+```{r, message=FALSE, warning=FALSE}
+# 2. Linear Regression: FPSA ~ Age
+lm_fPSA_age <- lm(`fPSA ng/ml` ~ age, data = data_1_final)
+summary(lm_fPSA_age)
+
+lm_fPSA_age
+
+# Visualization: FPSA vs Age
+ggplot(data_1_final, aes(x = age, y = `fPSA ng/ml`)) +
+  geom_point(alpha = 0.6, color = "blue") +
+  geom_smooth(method = "lm", color = "red") +
+  labs(
+    title = "Relationship Between FPSA and Age",
+    x = "Age (years)",
+    y = "FPSA (ng/ml)"
+  ) +
+  theme_minimal()
+
+# 3. Linear Regression: FPSA ~ Prostate Size
+lm_fPSA_Psize <- lm(`fPSA ng/ml` ~ `P. size`, data = data_1_final)
+summary(lm_fPSA_Psize)
+
+lm_fPSA_Psize
+
+# Visualization: FPSA vs Prostate Size
+ggplot(data_1_final, aes(x = `P. size`, y = `fPSA ng/ml`)) +
+  geom_point(alpha = 0.6, color = "green") +
+  geom_smooth(method = "lm", color = "red") +
+  labs(
+    title = "Relationship Between FPSA and Prostate Size",
+    x = "Prostate Size (cm³)",
+    y = "FPSA (ng/ml)"
+  ) +
+  theme_minimal()
+
+# 4. Linear Regression: FPSA ~ ACT
+lm_fPSA_ACT <- lm(`fPSA ng/ml` ~ ACT, data = data_1_final)
+summary(lm_fPSA_ACT)
+
+lm_fPSA_ACT
+
+# Visualization: FPSA vs ACT
+ggplot(data_1_final, aes(x = ACT, y = `fPSA ng/ml`)) +
+  geom_point(alpha = 0.6, color = "purple") +
+  geom_smooth(method = "lm", color = "red") +
+  labs(
+    title = "Relationship Between FPSA and ACT",
+    x = "ACT (clinical score or measure)",
+    y = "FPSA (ng/ml)"
+  ) +
+  theme_minimal()
+
+```
+## Additional Statistical Tests
+
+For further insights, we can include normality tests and non-parametric comparisons if data do not meet normality assumptions.
+
+```{r, message=FALSE, warning=FALSE}
+
+# Shapiro-Wilk test for FPSA normality
+shapiro.test(data_1_final$`fPSA ng/ml`)
+
+# If non-normal, use a non-parametric correlation test (Spearman)
+cor_spearman <- cor.test(data_1_final$`fPSA ng/ml`, data_1_final$age, method = "spearman")
+print(cor_spearman)
+
+# Export Results
+
+# Save regression summaries to a text file
+sink("linear_regression_summary.txt")
+cat("FPSA ~ Age:\n")
+print(summary(lm_fPSA_age))
+cat("\nFPSA ~ Prostate Size:\n")
+print(summary(lm_fPSA_Psize))
+cat("\nFPSA ~ ACT:\n")
+print(summary(lm_fPSA_ACT))
+sink()
+```
+
+## Part 2: Comparison for FPSA (Cancer Group) 
+Let's add a specific analysis for the cancer group based on treatment, grade, and Gleason score, using robust statistical tests.
+
+### 1. Kruskal-Wallis Test (Non-parametric ANOVA)
+If the data is not normally distributed, the Kruskal-Wallis test (a non-parametric equivalent of ANOVA) will help assess differences in fPSA between categorical variables like Treatment, Grade, and Gleason Score. This is particularly useful if the assumption of normality is violated.
+
+```{r, message=FALSE, warning=FALSE}
+
+cancer_data <- data_1_final %>% filter(participants == "P .cancer")
+
+
+# Kruskal-Wallis test for fPSA vs Treatment, Grade, and Gleason Score
+kruskal_grade <- kruskal.test(`fPSA ng/ml` ~ Grade, data = cancer_data)
+kruskal_gleason <- kruskal.test(`fPSA ng/ml` ~ `gleasons score`, data = cancer_data)
+
+# Display the Kruskal-Wallis test results
+kruskal_grade
+kruskal_gleason
+```
+
+### 2. T-Test for fPSA (for Pairwise Comparisons)
+A T-test will be useful for comparing fPSA between two groups (e.g., comparing two types of treatments or grades).
+
+```{r, message=FALSE, warning=FALSE}
+
+cancer_data$gleason_score_numeric <- as.numeric(sub(".*=(\\d+)", "\\1", cancer_data$`gleasons score`))
+
+cancer_data$gleason_group <- ifelse(cancer_data$gleason_score_numeric <= 6, "Low", "High")
+t_test_gleason <- t.test(`fPSA ng/ml` ~ gleason_group, data = cancer_data)
+
+t_test_gleason
+
+```
+
+### 3. Multivariate Analysis using Principal Component Analysis (PCA)
+To understand the variance in the dataset and explore how the variables (including fPSA, Age, Treatment, Grade, etc.) contribute to the data structure, we can perform Principal Component Analysis (PCA). PCA is often used in bioinformatics to reduce dimensionality and identify patterns.
+
+```{r, message=FALSE, warning=FALSE}
+# PCA analysis on numeric variables (including fPSA, Age, Gleason Score, etc.)
+# Filter cancer data for the "P.cancer" group
+cancer_data <- data_1_final %>% filter(participants == "P .cancer")
+
+# Check the data types of the columns in the PCA data
+sapply(cancer_data, class)
+
+# Convert 'gleasons score' to numeric by extracting the score
+cancer_data$gleason_score_numeric <- as.numeric(sub(".*=(\\d+)", "\\1", cancer_data$`gleasons score`))
+
+# Check if 'P. size' is numeric, otherwise convert it
+cancer_data$P_size_numeric <- as.numeric(cancer_data$`P. size`)
+
+# Ensure all other columns are numeric
+cancer_data$age <- as.numeric(cancer_data$age)
+
+# Remove non-numeric columns from the dataset if necessary
+pca_data <- cancer_data %>% select(`fPSA ng/ml`, age, gleason_score_numeric, P_size_numeric, ACT)
+
+# Verify the data types again
+sapply(pca_data, class)
+
+# Perform PCA on the cleaned and converted data
+pca_result <- prcomp(pca_data, center = TRUE, scale. = TRUE)
+
+# Display PCA results
+summary(pca_result)
+
+
+# Visualize PCA (biplot)
+biplot(pca_result, main = "PCA of fPSA and Clinical Factors")
+```
+
+### 4. Correlation Matrix with Heatmap
+To better understand relationships between multiple variables (such as fPSA, Age, Gleason Score, ACT, etc.), a correlation matrix with a heatmap will help visualize how strongly the variables are correlated with each other.
+
+```{r, message=FALSE, warning=FALSE}
+# Ensure all columns are numeric, converting where necessary
+cancer_data <- cancer_data %>%
+  mutate(
+    # Convert 'gleasons score' to numeric by extracting the numeric part
+    gleason_score_numeric = as.numeric(sub(".*=(\\d+)", "\\1", `gleasons score`)),
+    # Ensure 'P. size' is numeric
+    P_size_numeric = as.numeric(`P. size`),
+    # Ensure 'age' is numeric (if not already)
+    age = as.numeric(age)
+  )
+
+# Use the numeric columns for correlation matrix
+cor_matrix_extended <- cancer_data %>%
+  select(`fPSA ng/ml`, age, gleason_score_numeric, P_size_numeric, ACT) %>%
+  cor(use = "pairwise.complete.obs")
+
+# Check the correlation matrix
+print(cor_matrix_extended)
+
+
+# Heatmap of the correlation matrix
+library(heatmaply)
+heatmaply(cor_matrix_extended, main = "Correlation Matrix of Clinical V")
+```
+
+
+
+### 5. Heatmap for Visualizing Clinical Groupings Based on fPSA and Treatment
+
+Another useful visualization technique is a heatmap that highlights the relationships between clinical factors and fPSA levels across different Treatment and Grade groups. This can help identify trends or anomalies.
+
+```{r, message=FALSE, warning=FALSE}
+
+# Creating a heatmap for fPSA across different Treatment and Grade categories
+
+library(tidyr)
+# Prepare the data
+cancer_data$Treatment[is.na(cancer_data$Treatment)] <- "Unknown"
+cancer_data_clean <- cancer_data %>%
+  filter(!is.na(Treatment))
+
+heatmap_data <- cancer_data_clean %>%
+  group_by(Treatment, Grade) %>%
+  summarise(mean_fPSA = mean(`fPSA ng/ml`, na.rm = TRUE)) %>%
+  pivot_wider(names_from = Grade, values_from = mean_fPSA)
+
+# Reshape the data back to long format
+heatmap_data_long <- heatmap_data %>%
+  pivot_longer(cols = starts_with("grade"), 
+               names_to = "Grade", 
+               values_to = "mean_fPSA")
+heatmap_data_long
+
+# Plotting the heatmap
+ggplot(heatmap_data_long, aes(x = Grade, y = Treatment, fill = mean_fPSA)) +
+  geom_tile() +
+  scale_fill_viridis() +
+  theme_minimal() +
+  labs(title = "fPSA Levels by Treatment and Grade", x = "Grade", y = "Treatment")
+
+```
+
+### 6. Shapiro-Wilk Test for Normality
+
+Before applying statistical tests, it is essential to check if the data follow a normal distribution. The Shapiro-Wilk test is appropriate for this.
+
+```{r, message=FALSE, warning=FALSE}
+# Shapiro-Wilk normality test for fPSA in the cancer group
+
+shapiro_test <- shapiro.test(cancer_data$`fPSA ng/ml`)
+
+print(shapiro_test)
+```
+
+### 7. Non-Parametric Tests (if the data is not normal)
+If the normality test fails (p-value < 0.05), it is better to use non-parametric tests such as Kruskal-Wallis (for factors with more than two levels) and Mann-Whitney U test (for comparisons between two groups).
+
+
+```{r, message=FALSE, warning=FALSE}
+#Kruskal-Wallis Test
+
+# Kruskal-Wallis test for fPSA vs Grade
+
+kruskal_test_grade <- kruskal.test(`fPSA ng/ml` ~ Grade, data = cancer_data)
+
+print(kruskal_test_grade)
+
+# Kruskal-Wallis test for fPSA vs Gleason Score
+
+kruskal_test_gleason <- kruskal.test(`fPSA ng/ml` ~ `gleasons score`, data = cancer_data)
+
+print(kruskal_test_gleason)
+```
+These non-parametric tests allow us to analyze whether the distributions of fPSA differ significantly across groups.
+
+
+### 8.Multiple Linear Regression
+Multiple linear regression allows us to model the relationship between several independent variables and the dependent variable fPSA.
+```{r, message=FALSE, warning=FALSE}
+# Multiple linear regression for fPSA based on Treatment, Grade, and Gleason Score
+
+lm_fPSA <- lm(`fPSA ng/ml` ~ Grade + `gleasons score`, data = cancer_data)
+
+summary(lm_fPSA)
+```
+This helps identify the relative impact of each factor ( Grade, Gleason Score) on fPSA levels.
+
+
+## Part 3: Comparison Between PSA, FPSA, and CPSA
+To explore the complex relationships between PSA, fPSA, and cPSA, as well as their connection to factors such as age and group, we will use advanced statistical methods. These methods provide a better understanding of interactions between multiple variables simultaneously.
+
+### 1. Multivariate Analysis of Variance (MANOVA)
+
+MANOVA allows us to simultaneously analyze how the factors age, ACT, P.size, and group affect multiple dependent variables (e.g., PSA, fPSA, cPSA). This can help us assess if these factors jointly influence the biomarkers across different groups.
+
+```{r, message=FALSE, warning=FALSE}
+# MANOVA analysis: comparing age, ACT, P.size, and group
+manova_result <- manova(cbind(`PSA ng/ml`, `fPSA ng/ml`, `cPSA ng/ml`) ~ age + ACT + `P. size` + participants, data = data_1_final)
+manova_result 
+
+```
+
+### 2. Multiple Linear Regression
+Multiple regression models can assess the individual effect of age, ACT, and P.size on each of the biomarkers (PSA, fPSA, cPSA) separately, while accounting for the interaction with group.
+
+```{r, message=FALSE, warning=FALSE}
+# Multiple linear regression models for each PSA variable
+lm_psa <- lm(`PSA ng/ml` ~ age + ACT + `P. size` + participants, data = data_1_final)
+lm_fpsa <- lm(`fPSA ng/ml` ~ age + ACT + `P. size` + participants, data = data_1_final)
+lm_cpsa <- lm(`cPSA ng/ml` ~ age + ACT + `P. size` + participants, data = data_1_final)
+
+# Summary of regression results for each biomarker
+summary(lm_psa)
+summary(lm_fpsa)
+summary(lm_cpsa)
+```
+
+### 3. Comparison of Group Means Using ANOVA or T-tests
+We can compare how age, ACT, and P.size differ between Cancer and Non-Cancer groups using ANOVA (for multiple groups) or T-tests (for two groups).
+
+#a. T-test (If comparing two groups like Cancer vs Non-Cancer
+
+```{r, message=FALSE, warning=FALSE}
+# T-test to compare age, ACT, and P.size between the Cancer and Non-Cancer groups
+# Create a new factor for Cancer vs Non-Cancer
+data_1_final$Cancer_Group <- ifelse(data_1_final$participants == "P .cancer", "Cancer", "Non-Cancer")
+
+# T-test to compare age between Cancer and Non-Cancer groups
+t_test_age <- t.test(age ~ Cancer_Group, data = data_1_final)
+
+# T-test for ACT between Cancer and Non-Cancer groups
+t_test_ACT <- t.test(ACT ~ Cancer_Group, data = data_1_final)
+
+# T-test for P.size between Cancer and Non-Cancer groups
+t_test_Psize <- t.test(`P. size` ~ Cancer_Group, data = data_1_final)
+
+# Display results
+t_test_age
+t_test_ACT
+t_test_Psize
+
+#b. ANOVA (If comparing more than two groups):
+
+# ANOVA to compare age, ACT, and P.size across multiple groups
+anova_age <- aov(age ~ Cancer_Group, data = data_1_final)
+anova_act <- aov(ACT ~ Cancer_Group, data = data_1_final)
+anova_psize <- aov(`P. size` ~ Cancer_Group, data = data_1_final)
+
+# Display ANOVA results
+summary(anova_age)
+summary(anova_act)
+summary(anova_psize)
+```
+
+### 4. Correlation Analysis
+To assess the strength and direction of the relationship between age, ACT, P.size, and PSA, fPSA, and cPSA, we can perform correlation analysis.
+
+```{r, message=FALSE, warning=FALSE}
+# Calculate correlation matrix between age, ACT, P.size, and biomarkers
+cor_matrix <- cor(data_1_final[, c("age", "ACT", "P. size", "PSA ng/ml", "fPSA ng/ml", "cPSA ng/ml")], use = "complete.obs")
+
+# Display correlation matrix
+cor_matrix
+```
+### 5. Visualization
+To visually compare the differences in age, ACT, and P.size across Cancer and Non-Cancer groups, boxplots and scatter plots can be helpful.
+
+```{r, message=FALSE, warning=FALSE}
+# Boxplot of age, ACT, and P.size by group
+library(ggplot2)
+
+ggplot(data_1_final, aes(x = participants, y = age, fill = participants)) +
+  geom_boxplot() +
+  labs(title = "Age by Group", x = "Group", y = "Age")
+
+ggplot(data_1_final, aes(x = participants, y = ACT, fill = participants)) +
+  geom_boxplot() +
+  labs(title = "ACT by Group", x = "participants", y = "ACT")
+
+ggplot(data_1_final, aes(x = participants, y = `P. size`, fill = participants)) +
+  geom_boxplot() +
+  labs(title = "P.size by Group", x = "participants", y = "P. size")
+
+# Scatter plot of age vs PSA, fPSA, and cPSA
+ggplot(data_1_final, aes(x = age, y = `PSA ng/ml`, color = participants)) +
+  geom_point() +
+  labs(title = "Age vs PSA", x = "Age", y = "PSA (ng/ml)")
+
+ggplot(data_1_final, aes(x = age, y = `fPSA ng/ml`, color = participants)) +
+  geom_point() +
+  labs(title = "Age vs fPSA", x = "Age", y = "fPSA (ng/ml)")
+
+ggplot(data_1_final, aes(x = age, y = `cPSA ng/ml`, color = participants)) +
+  geom_point() +
+  labs(title = "Age vs cPSA", x = "Age", y = "cPSA (ng/ml)")
+```

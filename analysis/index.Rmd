@@ -1,0 +1,67 @@
+---
+title: "DALIA"
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: console
+---
+
+Tutorial: Analysis of Relationships Between Biomarkers and Clinical Factors
+
+## Abstract
+
+This study aims to analyze the relationships between PSA biomarkers, fPSA, and cPSA with several clinical factors such as age, prostate size (P.size), and ACT. The statistical methods used include correlation tests, linear regressions, normality tests, non-parametric variance analyses, and Principal Component Analysis (PCA) to reduce data dimensionality. The results show that prostate size is significantly correlated with fPSA levels, while age and ACT do not show significant relationships. The analysis suggests that prostate size influences fPSA levels, but other factors, such as age and ACT, warrant further exploration.
+
+## Introduction
+
+Biomarkers such as PSA (Prostate-Specific Antigen) and its fractions, notably fPSA and cPSA, play a crucial role in detecting and monitoring prostate cancer. However, the clinical factors influencing their expression remain largely unexplored. This study focuses on exploring the relationships between these biomarkers and clinical variables such as age, prostate size, and ACT (Prostate Cancer Antigen). Using advanced statistical techniques, the goal is to identify significant correlations and better understand the factors influencing PSA levels, to improve diagnostic and patient monitoring strategies.
+
+## Materials and Methods
+
+The goal of this analysis is to study the relationships between different biomarkers (PSA, fPSA, cPSA) and several clinical factors, such as age, prostate size (P.size), and ACT. Several statistical techniques were used to assess these relationships:
+  
+  - **Correlation Analysis**: A correlation matrix was calculated between fPSA, age, prostate size, and ACT to observe linear relationships.
+- **Linear Regression**: Three models were created to analyze the relationships between fPSA and the factors: age, prostate size, and ACT.
+- **Normality Tests**: The Shapiro-Wilk test was used to check the normality of fPSA data.
+- **Non-parametric Analysis (Kruskal-Wallis)**: A comparison of fPSA levels across different groups (Grade, Gleason Score).
+- **Principal Component Analysis (PCA)**: Reduction of data dimensionality while preserving the main sources of variance.
+- **Multiple Linear Regression**: Analysis of the simultaneous effect of the factors on PSA, fPSA, and cPSA.
+
+## Results
+
+### Correlation Analysis:
+
+- **Correlation between fPSA and prostate size**: A weak positive correlation was observed, but it was significant (p = 0.022).
+- **Correlation with age and ACT**: No significant relationship was found (p > 0.05).
+- **Spearman non-parametric test for fPSA and age**: Also showed no significant relationship (p = 0.799).
+
+### Linear Regressions:
+
+- **fPSA ~ Age**: No significant relationship (p = 0.741).
+- **fPSA ~ Prostate Size**: Positive and significant relationship (p = 0.022).
+- **fPSA ~ ACT**: No significant relationship (p = 0.148).
+
+### Normality Test (Shapiro-Wilk): 
+
+- fPSA does not follow a normal distribution (p < 2.2e−16).
+
+### Kruskal-Wallis (fPSA by Grade and Gleason Score): 
+
+- No significant difference in the distribution of fPSA levels (p > 0.05).
+
+### PCA:
+
+- The first two components explain 53.05% of the total variance, effectively reducing the dimensionality while capturing the main variations in the data.
+
+### Multiple Regressions:
+
+- **PSA**: Age and status (cancer) significantly influence PSA levels.
+- **fPSA**: Prostate size is the only significant factor.
+- **cPSA**: Age and status (cancer) have a significant impact.
+
+## Conclusion
+
+The results show that prostate size is the only factor with a significant correlation with fPSA. In contrast, age and ACT do not have significant relationships with fPSA. Additionally, the fPSA data does not follow a normal distribution, which limits the application of some parametric statistical tests.
+
+In summary, prostate size appears to influence fPSA levels, but other clinical factors require further exploration. Non-parametric approaches and dimensionality reduction (PCA) could be further explored to understand the complex relationships in this data.

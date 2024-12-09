@@ -1,0 +1,148 @@
+---
+title: "FPSA Analysis"
+output:
+  workflowr::wflow_html:
+    toc: true
+    toc_depth: 2
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+# Load necessary libraries
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(corrplot)
+library(cluster)
+library(factoextra)
+library(pheatmap)
+library(irlba)
+library(Rtsne)
+library(tidyr)
+library(viridis)
+library(heatmaply)
+```
+
+# Data Loading and Preparation
+```{r, message=FALSE, warning=FALSE}
+# Load the dataset
+data_path <- "C:/Users/T0087231/Videos/data-1 final.xlsx"
+data_1_final <- read_excel(data_path)
+
+# Quick preview of the data
+str(data_1_final)
+head(data_1_final)
+```
+
+---
+
+# Part 1: Comparison of FPSA with Age, Prostate Size, and ACT
+
+## Correlation Analysis
+```{r, message=FALSE, warning=FALSE}
+# 1. Compute the correlation matrix
+selected_columns <- data_1_final %>% select(`fPSA ng/ml`, age, `P. size`, ACT)
+cor_matrix <- cor(selected_columns, use = "pairwise.complete.obs")
+
+# Display the correlation matrix
+print(cor_matrix)
+
+# Visualize the correlation matrix with coefficients
+corrplot(
+  cor_matrix,
+  method = "circle",
+  type = "upper",
+  title = "Correlation Matrix: FPSA vs Clinical Variables",
+  tl.cex = 0.8,
+  mar = c(0, 0, 2, 0),
+  addCoef.col = "black"  # Show coefficients on the plot
+)
+```
+
+---
+
+## Linear Regression Analysis
+### FPSA vs Age
+```{r, message=FALSE, warning=FALSE}
+# Linear Regression: FPSA ~ Age
+lm_fPSA_age <- lm(`fPSA ng/ml` ~ age, data = data_1_final)
+summary(lm_fPSA_age)
+
+# Visualization: FPSA vs Age
+ggplot(data_1_final, aes(x = age, y = `fPSA ng/ml`)) +
+  geom_point(alpha = 0.6, color = "blue") +
+  geom_smooth(method = "lm", color = "red") +
+  labs(
+    title = "Relationship Between FPSA and Age",
+    x = "Age (years)",
+    y = "FPSA (ng/ml)"
+  ) +
+  theme_minimal()
+```
+
+### FPSA vs Prostate Size
+```{r, message=FALSE, warning=FALSE}
+# Linear Regression: FPSA ~ Prostate Size
+lm_fPSA_Psize <- lm(`fPSA ng/ml` ~ `P. size`, data = data_1_final)
+summary(lm_fPSA_Psize)
+
+# Visualization: FPSA vs Prostate Size
+ggplot(data_1_final, aes(x = `P. size`, y = `fPSA ng/ml`)) +
+  geom_point(alpha = 0.6, color = "green") +
+  geom_smooth(method = "lm", color = "red") +
+  labs(
+    title = "Relationship Between FPSA and Prostate Size",
+    x = "Prostate Size (cm³)",
+    y = "FPSA (ng/ml)"
+  ) +
+  theme_minimal()
+```
+
+### FPSA vs ACT
+```{r, message=FALSE, warning=FALSE}
+# Linear Regression: FPSA ~ ACT
+lm_fPSA_ACT <- lm(`fPSA ng/ml` ~ ACT, data = data_1_final)
+summary(lm_fPSA_ACT)
+
+# Visualization: FPSA vs ACT
+ggplot(data_1_final, aes(x = ACT, y = `fPSA ng/ml`)) +
+  geom_point(alpha = 0.6, color = "purple") +
+  geom_smooth(method = "lm", color = "red") +
+  labs(
+    title = "Relationship Between FPSA and ACT",
+    x = "ACT (clinical score or measure)",
+    y = "FPSA (ng/ml)"
+  ) +
+  theme_minimal()
+```
+
+---
+
+## Additional Statistical Tests
+```{r, message=FALSE, warning=FALSE}
+# Test for normality of FPSA
+shapiro_result <- shapiro.test(data_1_final$`fPSA ng/ml`)
+print(shapiro_result)
+
+# If non-normal, perform a non-parametric correlation test (Spearman)
+cor_spearman <- cor.test(data_1_final$`fPSA ng/ml`, data_1_final$age, method = "spearman")
+print(cor_spearman)
+```
+
+---
+
+# Optional: Export Results
+```{r, message=FALSE, warning=FALSE}
+# Save regression summaries to a text file
+sink("linear_regression_summary.txt")
+cat("FPSA ~ Age:\n")
+print(summary(lm_fPSA_age))
+cat("\nFPSA ~ Prostate Size:\n")
+print(summary(lm_fPSA_Psize))
+cat("\nFPSA ~ ACT:\n")
+print(summary(lm_fPSA_ACT))
+sink()
+```
+
+---

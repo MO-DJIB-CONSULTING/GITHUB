@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>FPSA</title>
+
+<script src="site_libs/header-attrs-2.27/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.10.4/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DALIA PROJECT</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">DALIA</a>
+</li>
+<li>
+  <a href="FPSA.html">FPSA</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">FPSA</h1>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2024-12-09
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>dalia/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20240618code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20240618)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20240618code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20240618)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtkcacciaKODAMAAnalysistree02cc264bbf117dafbd990a285ee0f8464175f58atargetblank02cc264a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/tkcaccia/KODAMA-Analysis/tree/02cc264bbf117dafbd990a285ee0f8464175f58a" target="_blank">02cc264</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomtkcacciaKODAMAAnalysistree02cc264bbf117dafbd990a285ee0f8464175f58atargetblank02cc264a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/tkcaccia/KODAMA-Analysis/tree/02cc264bbf117dafbd990a285ee0f8464175f58a" target="_blank">02cc264</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Untracked files:
+    Untracked:  analysis/figure/
+    Untracked:  analysis/fpsa analysis.Rmd
+    Untracked:  analysis/linear_regression_summary.txt
+    Untracked:  data/age of the control.xlsx
+    Untracked:  data/calculations.xlsx
+    Untracked:  data/data-1 final.xlsx
+    Untracked:  data_with_clusters.csv
+    Untracked:  linear_regression_summary.txt
+    Untracked:  workflow.sh
+
+Unstaged changes:
+    Deleted:    .Rprofile
+    Deleted:    .gitattributes
+    Deleted:    .gitignore
+    Deleted:    KODAMA.svg
+    Deleted:    README.md
+    Deleted:    analysis/DLPFC.Rmd
+    Deleted:    analysis/FPSA.RMD
+    Deleted:    analysis/Giotto.Rmd
+    Deleted:    analysis/Installation.Rmd
+    Deleted:    analysis/Interoperability.Rmd
+    Deleted:    analysis/MERFISH.Rmd
+    Deleted:    analysis/Prostate.Rmd
+    Deleted:    analysis/Seurat.Rmd
+    Deleted:    analysis/Simulation.Rmd
+    Deleted:    analysis/Single-cell.Rmd
+    Deleted:    analysis/SpatialExperiment.Rmd
+    Deleted:    analysis/VisiumHD.Rmd
+    Modified:   analysis/_site.yml
+    Deleted:    analysis/about.Rmd
+    Modified:   analysis/index.Rmd
+    Deleted:    analysis/license.Rmd
+    Deleted:    code/Acinar_Cell_Carcinoma.ipynb
+    Deleted:    code/Adenocarcinoma.ipynb
+    Deleted:    code/Adjacent_normal_section.ipynb
+    Deleted:    code/DLFPC_preprocessing.R
+    Deleted:    code/DLPFC - BANKSY.R
+    Deleted:    code/DLPFC - BASS.R
+    Deleted:    code/DLPFC - BAYESPACE.R
+    Deleted:    code/DLPFC - Nonspatial.R
+    Deleted:    code/DLPFC - PRECAST.R
+    Deleted:    code/DLPFC_comparison.R
+    Deleted:    code/DLPFC_results_analysis.R
+    Deleted:    code/Giotto_download.sh
+    Deleted:    code/Prostate_download.sh
+    Deleted:    code/Prostate_preprocessing.R
+    Deleted:    code/README.md
+    Deleted:    code/VisiumHD-CRC.ipynb
+    Deleted:    code/VisiumHD_CRC_download.sh
+    Deleted:    data/.gitattributes
+    Deleted:    data/DLFPC-Br5292-input.RData
+    Deleted:    data/DLFPC-Br5595-input.RData
+    Deleted:    data/DLFPC-Br8100-input.RData
+    Deleted:    data/Pathology.csv
+    Deleted:    data/Prostate_data.RData
+    Deleted:    data/README.md
+    Deleted:    data/merfish.Rmd
+    Deleted:    data/spots_classification_ALL.csv
+    Deleted:    data/trajectories.RData
+    Deleted:    data/trajectories_VISIUMHD.RData
+    Deleted:    data/vis.R
+    Deleted:    output/BANSKY-results.RData
+    Deleted:    output/BASS-results.RData
+    Deleted:    output/BayesSpace-results.RData
+    Deleted:    output/CRC-image.RData
+    Deleted:    output/CRC-image2.RData
+    Deleted:    output/DLFPC-All.RData
+    Deleted:    output/DLFPC-Br5292.RData
+    Deleted:    output/DLFPC-Br5595.RData
+    Deleted:    output/DLFPC-Br8100.RData
+    Deleted:    output/Figure 1 - boxplot.pdf
+    Deleted:    output/Figure 2 - DLPFC 10.pdf
+    Deleted:    output/KODAMA-results.RData
+    Deleted:    output/MERFISH.RData
+    Deleted:    output/Nonspatial-results.RData
+    Deleted:    output/PRECAST-results.RData
+    Deleted:    output/README.md
+    Deleted:    output/VisiumHD3.RData
+    Deleted:    output/image.RData
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/FPSA.Rmd</code>) and HTML
+(<code>docs/FPSA.html</code>) files. If you’ve configured a remote Git
+repository (see <code>?wflow_git_remote</code>), click on the hyperlinks
+in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/tkcaccia/KODAMA-Analysis/blob/02cc264bbf117dafbd990a285ee0f8464175f58a/analysis/FPSA.Rmd" target="_blank">02cc264</a>
+</td>
+<td>
+MO-DJIB-CONSULTING
+</td>
+<td>
+2024-12-09
+</td>
+<td>
+Start my new project
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/tkcaccia/KODAMA-Analysis/blob/55bf7283abc3b311d944ef765bfc9377e5ed1954/analysis/FPSA.Rmd" target="_blank">55bf728</a>
+</td>
+<td>
+MO-DJIB-CONSULTING
+</td>
+<td>
+2024-12-04
+</td>
+<td>
+Start my new project
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/tkcaccia/KODAMA-Analysis/blob/9209c325ad56c0b4b38ea5ded0db77602b3aa003/analysis/FPSA.Rmd" target="_blank">9209c32</a>
+</td>
+<td>
+MO-DJIB-CONSULTING
+</td>
+<td>
+2024-12-04
+</td>
+<td>
+Start my new project
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/tkcaccia/KODAMA-Analysis/blob/23370fe01c95d596ec6a5fa56feb9314f81058c7/analysis/FPSA.Rmd" target="_blank">23370fe</a>
+</td>
+<td>
+MO-DJIB-CONSULTING
+</td>
+<td>
+2024-12-04
+</td>
+<td>
+Start my new project
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/tkcaccia/KODAMA-Analysis/blob/1a9edb635f2cdbe19262b40a278ac881136d0cb1/analysis/FPSA.Rmd" target="_blank">1a9edb6</a>
+</td>
+<td>
+MO-DJIB-CONSULTING
+</td>
+<td>
+2024-12-04
+</td>
+<td>
+Start my new project
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code># Load necessary libraries
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(corrplot)
+library(cluster)
+library(factoextra)
+library(pheatmap)
+library(irlba)
+library(Rtsne)
+library(tidyr)
+library(viridis)
+library(heatmaply)
+
+
+# Loading the data
+
+data_1_final &lt;- read_excel(&quot;C:/Users/T0087231/Videos/data-1 final.xlsx&quot;)
+View(data_1_final)
+data_1_final</code></pre>
+<pre><code># A tibble: 300 × 17
+   participants   age `duration /years` `family history` `P. size` Treatment
+   &lt;chr&gt;        &lt;dbl&gt;             &lt;dbl&gt; &lt;chr&gt;                &lt;dbl&gt; &lt;chr&gt;    
+ 1 control         84                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+ 2 control         62                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+ 3 control         84                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+ 4 control         75                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+ 5 control         61                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+ 6 control         65                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+ 7 control         59                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+ 8 control         71                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+ 9 control         83                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+10 control         76                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+# ℹ 290 more rows
+# ℹ 11 more variables: `Treatment status` &lt;chr&gt;, Grade &lt;chr&gt;,
+#   `gleasons score` &lt;chr&gt;, `PSA ng/ml` &lt;dbl&gt;, `fPSA ng/ml` &lt;dbl&gt;,
+#   `cPSA ng/ml` &lt;dbl&gt;, `fPSA%` &lt;dbl&gt;, `cPSA%` &lt;dbl&gt;, ...15 &lt;lgl&gt;, ACT &lt;dbl&gt;,
+#   `ACT GREEN` &lt;dbl&gt;</code></pre>
+<pre class="r"><code>str(data_1_final)</code></pre>
+<pre><code>tibble [300 × 17] (S3: tbl_df/tbl/data.frame)
+ $ participants    : chr [1:300] &quot;control&quot; &quot;control&quot; &quot;control&quot; &quot;control&quot; ...
+ $ age             : num [1:300] 84 62 84 75 61 65 59 71 83 76 ...
+ $ duration /years : num [1:300] NA NA NA NA NA NA NA NA NA NA ...
+ $ family history  : chr [1:300] NA NA NA NA ...
+ $ P. size         : num [1:300] NA NA NA NA NA NA NA NA NA NA ...
+ $ Treatment       : chr [1:300] NA NA NA NA ...
+ $ Treatment status: chr [1:300] NA NA NA NA ...
+ $ Grade           : chr [1:300] NA NA NA NA ...
+ $ gleasons score  : chr [1:300] NA NA NA NA ...
+ $ PSA ng/ml       : num [1:300] 2 2.1 1.9 2.3 2.2 2.1 2.1 2.8 2 2.1 ...
+ $ fPSA ng/ml      : num [1:300] 0.52 1.31 0.67 0.44 0.48 0.53 0.69 0.53 0.71 1.51 ...
+ $ cPSA ng/ml      : num [1:300] 1.48 0.79 1.23 1.86 1.72 1.57 1.41 2.27 1.29 0.59 ...
+ $ fPSA%           : num [1:300] 26 62.4 35.3 19.1 21.8 ...
+ $ cPSA%           : num [1:300] 74 37.6 64.7 80.9 78.2 ...
+ $ ...15           : logi [1:300] NA NA NA NA NA NA ...
+ $ ACT             : num [1:300] 25 27.3 24 22 27.3 ...
+ $ ACT GREEN       : num [1:300] 250 273 240 220 273 ...</code></pre>
+<pre class="r"><code>head(data_1_final)</code></pre>
+<pre><code># A tibble: 6 × 17
+  participants   age `duration /years` `family history` `P. size` Treatment
+  &lt;chr&gt;        &lt;dbl&gt;             &lt;dbl&gt; &lt;chr&gt;                &lt;dbl&gt; &lt;chr&gt;    
+1 control         84                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+2 control         62                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+3 control         84                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+4 control         75                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+5 control         61                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+6 control         65                NA &lt;NA&gt;                    NA &lt;NA&gt;     
+# ℹ 11 more variables: `Treatment status` &lt;chr&gt;, Grade &lt;chr&gt;,
+#   `gleasons score` &lt;chr&gt;, `PSA ng/ml` &lt;dbl&gt;, `fPSA ng/ml` &lt;dbl&gt;,
+#   `cPSA ng/ml` &lt;dbl&gt;, `fPSA%` &lt;dbl&gt;, `cPSA%` &lt;dbl&gt;, ...15 &lt;lgl&gt;, ACT &lt;dbl&gt;,
+#   `ACT GREEN` &lt;dbl&gt;</code></pre>
+<div id="part-1-comparison-of-fpsa-with-age-prostate-size-and-act"
+class="section level1">
+<h1>Part 1: Comparison of FPSA with Age, Prostate Size, and ACT</h1>
+<div id="correlation-analysis" class="section level2">
+<h2>Correlation Analysis</h2>
+<pre class="r"><code># 1. Compute the correlation matrix
+selected_columns &lt;- data_1_final %&gt;% select(`fPSA ng/ml`, age, `P. size`, ACT)
+cor_matrix &lt;- cor(selected_columns, use = &quot;pairwise.complete.obs&quot;)
+
+# Display the correlation matrix
+print(cor_matrix)</code></pre>
+<pre><code>            fPSA ng/ml         age     P. size         ACT
+fPSA ng/ml  1.00000000 -0.01913402  0.16218624  0.08371876
+age        -0.01913402  1.00000000 -0.01638971  0.10674558
+P. size     0.16218624 -0.01638971  1.00000000 -0.05531594
+ACT         0.08371876  0.10674558 -0.05531594  1.00000000</code></pre>
+<pre class="r"><code># Visualize the correlation matrix with coefficients
+corrplot(
+  cor_matrix, 
+  method = &quot;circle&quot;, 
+  type = &quot;upper&quot;, 
+  title = &quot;Correlation Matrix: FPSA vs Clinical Variables&quot;,
+  tl.cex = 0.8, 
+  mar = c(0, 0, 2, 0),
+  addCoef.col = &quot;black&quot;  # Show coefficients on the plot
+)</code></pre>
+<p><img src="figure/FPSA.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="linear-regression-analysis" class="section level2">
+<h2>Linear Regression Analysis</h2>
+<p>For each variable (age, prostate size, and ACT), we perform linear
+regression to assess their relationship with FPSA. Coefficients and
+p-values are extracted and interpreted.</p>
+<pre class="r"><code># 2. Linear Regression: FPSA ~ Age
+lm_fPSA_age &lt;- lm(`fPSA ng/ml` ~ age, data = data_1_final)
+summary(lm_fPSA_age)</code></pre>
+<pre><code>
+Call:
+lm(formula = `fPSA ng/ml` ~ age, data = data_1_final)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.2449 -1.7787 -0.9883  0.8212 11.0289 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept)  2.867713   0.925114    3.10  0.00212 **
+age         -0.004362   0.013203   -0.33  0.74136   
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.523 on 298 degrees of freedom
+Multiple R-squared:  0.0003661, Adjusted R-squared:  -0.002988 
+F-statistic: 0.1091 on 1 and 298 DF,  p-value: 0.7414</code></pre>
+<pre class="r"><code>lm_fPSA_age</code></pre>
+<pre><code>
+Call:
+lm(formula = `fPSA ng/ml` ~ age, data = data_1_final)
+
+Coefficients:
+(Intercept)          age  
+   2.867713    -0.004362  </code></pre>
+<pre class="r"><code># Visualization: FPSA vs Age
+ggplot(data_1_final, aes(x = age, y = `fPSA ng/ml`)) +
+  geom_point(alpha = 0.6, color = &quot;blue&quot;) +
+  geom_smooth(method = &quot;lm&quot;, color = &quot;red&quot;) +
+  labs(
+    title = &quot;Relationship Between FPSA and Age&quot;,
+    x = &quot;Age (years)&quot;,
+    y = &quot;FPSA (ng/ml)&quot;
+  ) +
+  theme_minimal()</code></pre>
+<p><img src="figure/FPSA.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># 3. Linear Regression: FPSA ~ Prostate Size
+lm_fPSA_Psize &lt;- lm(`fPSA ng/ml` ~ `P. size`, data = data_1_final)
+summary(lm_fPSA_Psize)</code></pre>
+<pre><code>
+Call:
+lm(formula = `fPSA ng/ml` ~ `P. size`, data = data_1_final)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.4315 -1.9342 -0.8985  1.1902  9.3604 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 2.443958   0.454506   5.377 2.12e-07 ***
+`P. size`   0.021635   0.009354   2.313   0.0218 *  
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.672 on 198 degrees of freedom
+  (100 observations deleted due to missingness)
+Multiple R-squared:  0.0263,    Adjusted R-squared:  0.02139 
+F-statistic: 5.349 on 1 and 198 DF,  p-value: 0.02176</code></pre>
+<pre class="r"><code>lm_fPSA_Psize</code></pre>
+<pre><code>
+Call:
+lm(formula = `fPSA ng/ml` ~ `P. size`, data = data_1_final)
+
+Coefficients:
+(Intercept)    `P. size`  
+    2.44396      0.02163  </code></pre>
+<pre class="r"><code># Visualization: FPSA vs Prostate Size
+ggplot(data_1_final, aes(x = `P. size`, y = `fPSA ng/ml`)) +
+  geom_point(alpha = 0.6, color = &quot;green&quot;) +
+  geom_smooth(method = &quot;lm&quot;, color = &quot;red&quot;) +
+  labs(
+    title = &quot;Relationship Between FPSA and Prostate Size&quot;,
+    x = &quot;Prostate Size (cm³)&quot;,
+    y = &quot;FPSA (ng/ml)&quot;
+  ) +
+  theme_minimal()</code></pre>
+<p><img src="figure/FPSA.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># 4. Linear Regression: FPSA ~ ACT
+lm_fPSA_ACT &lt;- lm(`fPSA ng/ml` ~ ACT, data = data_1_final)
+summary(lm_fPSA_ACT)</code></pre>
+<pre><code>
+Call:
+lm(formula = `fPSA ng/ml` ~ ACT, data = data_1_final)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.4895 -1.7141 -1.0250  0.6831 11.2272 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 2.203667   0.288890   7.628 3.23e-13 ***
+ACT         0.011151   0.007689   1.450    0.148    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.514 on 298 degrees of freedom
+Multiple R-squared:  0.007009,  Adjusted R-squared:  0.003677 
+F-statistic: 2.103 on 1 and 298 DF,  p-value: 0.148</code></pre>
+<pre class="r"><code>lm_fPSA_ACT</code></pre>
+<pre><code>
+Call:
+lm(formula = `fPSA ng/ml` ~ ACT, data = data_1_final)
+
+Coefficients:
+(Intercept)          ACT  
+    2.20367      0.01115  </code></pre>
+<pre class="r"><code># Visualization: FPSA vs ACT
+ggplot(data_1_final, aes(x = ACT, y = `fPSA ng/ml`)) +
+  geom_point(alpha = 0.6, color = &quot;purple&quot;) +
+  geom_smooth(method = &quot;lm&quot;, color = &quot;red&quot;) +
+  labs(
+    title = &quot;Relationship Between FPSA and ACT&quot;,
+    x = &quot;ACT (clinical score or measure)&quot;,
+    y = &quot;FPSA (ng/ml)&quot;
+  ) +
+  theme_minimal()</code></pre>
+<p><img src="figure/FPSA.Rmd/unnamed-chunk-3-3.png" width="672" style="display: block; margin: auto;" />
+## Additional Statistical Tests</p>
+<p>For further insights, we can include normality tests and
+non-parametric comparisons if data do not meet normality
+assumptions.</p>
+<pre class="r"><code># Shapiro-Wilk test for FPSA normality
+shapiro.test(data_1_final$`fPSA ng/ml`)</code></pre>
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  data_1_final$`fPSA ng/ml`
+W = 0.78165, p-value &lt; 2.2e-16</code></pre>
+<pre class="r"><code># If non-normal, use a non-parametric correlation test (Spearman)
+cor_spearman &lt;- cor.test(data_1_final$`fPSA ng/ml`, data_1_final$age, method = &quot;spearman&quot;)
+print(cor_spearman)</code></pre>
+<pre><code>
+    Spearman&#39;s rank correlation rho
+
+data:  data_1_final$`fPSA ng/ml` and data_1_final$age
+S = 4433607, p-value = 0.7993
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+       rho 
+0.01474304 </code></pre>
+<pre class="r"><code># Export Results
+
+# Save regression summaries to a text file
+sink(&quot;linear_regression_summary.txt&quot;)
+cat(&quot;FPSA ~ Age:\n&quot;)</code></pre>
+<pre><code>FPSA ~ Age:</code></pre>
+<pre class="r"><code>print(summary(lm_fPSA_age))</code></pre>
+<pre><code>
+Call:
+lm(formula = `fPSA ng/ml` ~ age, data = data_1_final)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.2449 -1.7787 -0.9883  0.8212 11.0289 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept)  2.867713   0.925114    3.10  0.00212 **
+age         -0.004362   0.013203   -0.33  0.74136   
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.523 on 298 degrees of freedom
+Multiple R-squared:  0.0003661, Adjusted R-squared:  -0.002988 
+F-statistic: 0.1091 on 1 and 298 DF,  p-value: 0.7414</code></pre>
+<pre class="r"><code>cat(&quot;\nFPSA ~ Prostate Size:\n&quot;)</code></pre>
+<pre><code>
+FPSA ~ Prostate Size:</code></pre>
+<pre class="r"><code>print(summary(lm_fPSA_Psize))</code></pre>
+<pre><code>
+Call:
+lm(formula = `fPSA ng/ml` ~ `P. size`, data = data_1_final)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.4315 -1.9342 -0.8985  1.1902  9.3604 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 2.443958   0.454506   5.377 2.12e-07 ***
+`P. size`   0.021635   0.009354   2.313   0.0218 *  
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.672 on 198 degrees of freedom
+  (100 observations deleted due to missingness)
+Multiple R-squared:  0.0263,    Adjusted R-squared:  0.02139 
+F-statistic: 5.349 on 1 and 198 DF,  p-value: 0.02176</code></pre>
+<pre class="r"><code>cat(&quot;\nFPSA ~ ACT:\n&quot;)</code></pre>
+<pre><code>
+FPSA ~ ACT:</code></pre>
+<pre class="r"><code>print(summary(lm_fPSA_ACT))</code></pre>
+<pre><code>
+Call:
+lm(formula = `fPSA ng/ml` ~ ACT, data = data_1_final)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.4895 -1.7141 -1.0250  0.6831 11.2272 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 2.203667   0.288890   7.628 3.23e-13 ***
+ACT         0.011151   0.007689   1.450    0.148    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.514 on 298 degrees of freedom
+Multiple R-squared:  0.007009,  Adjusted R-squared:  0.003677 
+F-statistic: 2.103 on 1 and 298 DF,  p-value: 0.148</code></pre>
+<pre class="r"><code>sink()</code></pre>
+</div>
+<div id="part-2-comparison-for-fpsa-cancer-group"
+class="section level2">
+<h2>Part 2: Comparison for FPSA (Cancer Group)</h2>
+<p>Let’s add a specific analysis for the cancer group based on
+treatment, grade, and Gleason score, using robust statistical tests.</p>
+<div id="kruskal-wallis-test-non-parametric-anova"
+class="section level3">
+<h3>1. Kruskal-Wallis Test (Non-parametric ANOVA)</h3>
+<p>If the data is not normally distributed, the Kruskal-Wallis test (a
+non-parametric equivalent of ANOVA) will help assess differences in fPSA
+between categorical variables like Treatment, Grade, and Gleason Score.
+This is particularly useful if the assumption of normality is
+violated.</p>
+<pre class="r"><code>cancer_data &lt;- data_1_final %&gt;% filter(participants == &quot;P .cancer&quot;)
+
+
+# Kruskal-Wallis test for fPSA vs Treatment, Grade, and Gleason Score
+kruskal_grade &lt;- kruskal.test(`fPSA ng/ml` ~ Grade, data = cancer_data)
+kruskal_gleason &lt;- kruskal.test(`fPSA ng/ml` ~ `gleasons score`, data = cancer_data)
+
+# Display the Kruskal-Wallis test results
+kruskal_grade</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  fPSA ng/ml by Grade
+Kruskal-Wallis chi-squared = 2.497, df = 4, p-value = 0.6452</code></pre>
+<pre class="r"><code>kruskal_gleason</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  fPSA ng/ml by gleasons score
+Kruskal-Wallis chi-squared = 1.6444, df = 3, p-value = 0.6494</code></pre>
+</div>
+<div id="t-test-for-fpsa-for-pairwise-comparisons"
+class="section level3">
+<h3>2. T-Test for fPSA (for Pairwise Comparisons)</h3>
+<p>A T-test will be useful for comparing fPSA between two groups (e.g.,
+comparing two types of treatments or grades).</p>
+<pre class="r"><code>cancer_data$gleason_score_numeric &lt;- as.numeric(sub(&quot;.*=(\\d+)&quot;, &quot;\\1&quot;, cancer_data$`gleasons score`))
+
+cancer_data$gleason_group &lt;- ifelse(cancer_data$gleason_score_numeric &lt;= 6, &quot;Low&quot;, &quot;High&quot;)
+t_test_gleason &lt;- t.test(`fPSA ng/ml` ~ gleason_group, data = cancer_data)
+
+t_test_gleason</code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  fPSA ng/ml by gleason_group
+t = -1.2267, df = 7.4084, p-value = 0.2575
+alternative hypothesis: true difference in means between group High and group Low is not equal to 0
+95 percent confidence interval:
+ -4.988171  1.555562
+sample estimates:
+mean in group High  mean in group Low 
+          2.833696           4.550000 </code></pre>
+</div>
+<div id="multivariate-analysis-using-principal-component-analysis-pca"
+class="section level3">
+<h3>3. Multivariate Analysis using Principal Component Analysis
+(PCA)</h3>
+<p>To understand the variance in the dataset and explore how the
+variables (including fPSA, Age, Treatment, Grade, etc.) contribute to
+the data structure, we can perform Principal Component Analysis (PCA).
+PCA is often used in bioinformatics to reduce dimensionality and
+identify patterns.</p>
+<pre class="r"><code># PCA analysis on numeric variables (including fPSA, Age, Gleason Score, etc.)
+# Filter cancer data for the &quot;P.cancer&quot; group
+cancer_data &lt;- data_1_final %&gt;% filter(participants == &quot;P .cancer&quot;)
+
+# Check the data types of the columns in the PCA data
+sapply(cancer_data, class)</code></pre>
+<pre><code>    participants              age  duration /years   family history 
+     &quot;character&quot;        &quot;numeric&quot;        &quot;numeric&quot;      &quot;character&quot; 
+         P. size        Treatment Treatment status            Grade 
+       &quot;numeric&quot;      &quot;character&quot;      &quot;character&quot;      &quot;character&quot; 
+  gleasons score        PSA ng/ml       fPSA ng/ml       cPSA ng/ml 
+     &quot;character&quot;        &quot;numeric&quot;        &quot;numeric&quot;        &quot;numeric&quot; 
+           fPSA%            cPSA%            ...15              ACT 
+       &quot;numeric&quot;        &quot;numeric&quot;        &quot;logical&quot;        &quot;numeric&quot; 
+       ACT GREEN 
+       &quot;numeric&quot; </code></pre>
+<pre class="r"><code># Convert &#39;gleasons score&#39; to numeric by extracting the score
+cancer_data$gleason_score_numeric &lt;- as.numeric(sub(&quot;.*=(\\d+)&quot;, &quot;\\1&quot;, cancer_data$`gleasons score`))
+
+# Check if &#39;P. size&#39; is numeric, otherwise convert it
+cancer_data$P_size_numeric &lt;- as.numeric(cancer_data$`P. size`)
+
+# Ensure all other columns are numeric
+cancer_data$age &lt;- as.numeric(cancer_data$age)
+
+# Remove non-numeric columns from the dataset if necessary
+pca_data &lt;- cancer_data %&gt;% select(`fPSA ng/ml`, age, gleason_score_numeric, P_size_numeric, ACT)
+
+# Verify the data types again
+sapply(pca_data, class)</code></pre>
+<pre><code>           fPSA ng/ml                   age gleason_score_numeric 
+            &quot;numeric&quot;             &quot;numeric&quot;             &quot;numeric&quot; 
+       P_size_numeric                   ACT 
+            &quot;numeric&quot;             &quot;numeric&quot; </code></pre>
+<pre class="r"><code># Perform PCA on the cleaned and converted data
+pca_result &lt;- prcomp(pca_data, center = TRUE, scale. = TRUE)
+
+# Display PCA results
+summary(pca_result)</code></pre>
+<pre><code>Importance of components:
+                          PC1    PC2    PC3    PC4    PC5
+Standard deviation     1.2634 1.0277 0.9254 0.8915 0.8345
+Proportion of Variance 0.3192 0.2112 0.1713 0.1590 0.1393
+Cumulative Proportion  0.3192 0.5305 0.7017 0.8607 1.0000</code></pre>
+<pre class="r"><code># Visualize PCA (biplot)
+biplot(pca_result, main = &quot;PCA of fPSA and Clinical Factors&quot;)</code></pre>
+<p><img src="figure/FPSA.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="correlation-matrix-with-heatmap" class="section level3">
+<h3>4. Correlation Matrix with Heatmap</h3>
+<p>To better understand relationships between multiple variables (such
+as fPSA, Age, Gleason Score, ACT, etc.), a correlation matrix with a
+heatmap will help visualize how strongly the variables are correlated
+with each other.</p>
+<pre class="r"><code># Ensure all columns are numeric, converting where necessary
+cancer_data &lt;- cancer_data %&gt;%
+  mutate(
+    # Convert &#39;gleasons score&#39; to numeric by extracting the numeric part
+    gleason_score_numeric = as.numeric(sub(&quot;.*=(\\d+)&quot;, &quot;\\1&quot;, `gleasons score`)),
+    # Ensure &#39;P. size&#39; is numeric
+    P_size_numeric = as.numeric(`P. size`),
+    # Ensure &#39;age&#39; is numeric (if not already)
+    age = as.numeric(age)
+  )
+
+# Use the numeric columns for correlation matrix
+cor_matrix_extended &lt;- cancer_data %&gt;%
+  select(`fPSA ng/ml`, age, gleason_score_numeric, P_size_numeric, ACT) %&gt;%
+  cor(use = &quot;pairwise.complete.obs&quot;)
+
+# Check the correlation matrix
+print(cor_matrix_extended)</code></pre>
+<pre><code>                       fPSA ng/ml         age gleason_score_numeric
+fPSA ng/ml             1.00000000 -0.16581480           -0.14253087
+age                   -0.16581480  1.00000000            0.04346348
+gleason_score_numeric -0.14253087  0.04346348            1.00000000
+P_size_numeric         0.20727293 -0.14888695           -0.20756844
+ACT                    0.06800046 -0.01405676           -0.17346135
+                      P_size_numeric         ACT
+fPSA ng/ml                 0.2072729  0.06800046
+age                       -0.1488869 -0.01405676
+gleason_score_numeric     -0.2075684 -0.17346135
+P_size_numeric             1.0000000  0.25292238
+ACT                        0.2529224  1.00000000</code></pre>
+<pre class="r"><code># Heatmap of the correlation matrix
+library(heatmaply)
+heatmaply(cor_matrix_extended, main = &quot;Correlation Matrix of Clinical V&quot;)</code></pre>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-7070f0d2f7d82f5882bc" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-7070f0d2f7d82f5882bc">{"x":{"data":[{"x":[3.125,1.75,null,1.75,1.75,null,1.75,1,null,1,1,null,1.75,2.5,null,2.5,2.5,null,2.5,2,null,2,2,null,2.5,3,null,3,3,null,3.125,4.5,null,4.5,4.5,null,4.5,4,null,4,4,null,4.5,5,null,5,5],"y":[1.80488435520724,1.80488435520724,null,1.80488435520724,1.3278996104418288,null,1.3278996104418288,1.3278996104418288,null,1.3278996104418288,0,null,1.3278996104418288,1.3278996104418288,null,1.3278996104418288,1.0747042547199981,null,1.0747042547199981,1.0747042547199981,null,1.0747042547199981,0,null,1.0747042547199981,1.0747042547199981,null,1.0747042547199981,0,null,1.80488435520724,1.80488435520724,null,1.80488435520724,1.3635687439839845,null,1.3635687439839845,1.3635687439839845,null,1.3635687439839845,0,null,1.3635687439839845,1.3635687439839845,null,1.3635687439839845,0],"text":["y: 1.804884","y: 1.804884",null,"y: 1.804884","y: 1.804884",null,"y: 1.327900","y: 1.327900",null,"y: 1.327900","y: 1.327900",null,"y: 1.327900","y: 1.327900",null,"y: 1.327900","y: 1.327900",null,"y: 1.074704","y: 1.074704",null,"y: 1.074704","y: 1.074704",null,"y: 1.074704","y: 1.074704",null,"y: 1.074704","y: 1.074704",null,"y: 1.804884","y: 1.804884",null,"y: 1.804884","y: 1.804884",null,"y: 1.363569","y: 1.363569",null,"y: 1.363569","y: 1.363569",null,"y: 1.363569","y: 1.363569",null,"y: 1.363569","y: 1.363569"],"type":"scatter","mode":"lines","line":{"width":2.2677165354330708,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3.125,1.75,1,2.5,2,3,4.5,4,5],"y":[1.80488435520724,1.3278996104418288,0,1.0747042547199981,0,0,1.3635687439839845,0,0],"text":["y: 1.804884","y: 1.327900","y: 0.000000","y: 1.074704","y: 0.000000","y: 0.000000","y: 1.363569","y: 0.000000","y: 0.000000"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"transparent","opacity":1,"size":null,"symbol":null,"line":{"width":1.8897637795275593,"color":"transparent"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"type":"scatter","mode":"markers","marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"line":{"color":"rgba(44,160,44,1)"},"xaxis":"x2","yaxis":"y","frame":null},{"x":[1,2,3,4,5],"y":[1,2,3,4,5],"z":[[1,0.34353445395360765,0.22820147024905291,0.034576621088564921,0.053858286685798659],[0.34353445395360765,1,0.38133724245305245,0.048594752183059461,0],[0.22820147024905291,0.38133724245305245,1,0.1602490396911056,0.028244431726328328],[0.034576621088564921,0.048594752183059461,0.1602490396911056,1,0.20788214413305323],[0.053858286685798659,0,0.028244431726328328,0.20788214413305323,1]],"text":[["row: fPSA ng/ml<br>column: fPSA ng/ml<br>value:  1.00000","row: fPSA ng/ml<br>column: P_size_numeric<br>value:  0.20727","row: fPSA ng/ml<br>column: ACT<br>value:  0.06800","row: fPSA ng/ml<br>column: age<br>value: -0.16581","row: fPSA ng/ml<br>column: gleason_score_numeric<br>value: -0.14253"],["row: P_size_numeric<br>column: fPSA ng/ml<br>value:  0.20727","row: P_size_numeric<br>column: P_size_numeric<br>value:  1.00000","row: P_size_numeric<br>column: ACT<br>value:  0.25292","row: P_size_numeric<br>column: age<br>value: -0.14889","row: P_size_numeric<br>column: gleason_score_numeric<br>value: -0.20757"],["row: ACT<br>column: fPSA ng/ml<br>value:  0.06800","row: ACT<br>column: P_size_numeric<br>value:  0.25292","row: ACT<br>column: ACT<br>value:  1.00000","row: ACT<br>column: age<br>value: -0.01406","row: ACT<br>column: gleason_score_numeric<br>value: -0.17346"],["row: age<br>column: fPSA ng/ml<br>value: -0.16581","row: age<br>column: P_size_numeric<br>value: -0.14889","row: age<br>column: ACT<br>value: -0.01406","row: age<br>column: age<br>value:  1.00000","row: age<br>column: gleason_score_numeric<br>value:  0.04346"],["row: gleason_score_numeric<br>column: fPSA ng/ml<br>value: -0.14253","row: gleason_score_numeric<br>column: P_size_numeric<br>value: -0.20757","row: gleason_score_numeric<br>column: ACT<br>value: -0.17346","row: gleason_score_numeric<br>column: age<br>value:  0.04346","row: gleason_score_numeric<br>column: gleason_score_numeric<br>value:  1.00000"]],"colorscale":[[0,"#440154"],[0.028244431726328328,"#460B5E"],[0.034576621088564921,"#470E61"],[0.048594752183059461,"#471366"],[0.053858286685798659,"#481568"],[0.1602490396911056,"#453882"],[0.20788214413305323,"#404688"],[0.22820147024905291,"#3E4C8A"],[0.34353445395360765,"#2F6B8E"],[0.38133724245305245,"#2C738E"],[1,"#FDE725"]],"type":"heatmap","showscale":false,"autocolorscale":false,"showlegend":false,"xaxis":"x","yaxis":"y2","hoverinfo":"text","frame":null},{"x":[1],"y":[1],"name":"32632a12b61de0d6a65331552787f4f5","type":"scatter","mode":"markers","opacity":0,"hoverinfo":"skip","showlegend":false,"marker":{"color":[0,1],"colorscale":[[0,"#440154"],[0.0033444816053511718,"#440256"],[0.0066889632107023436,"#450357"],[0.010033444816053515,"#450558"],[0.013377926421404687,"#450659"],[0.016722408026755859,"#46075B"],[0.020066889632107031,"#46085C"],[0.023411371237458178,"#460A5D"],[0.02675585284280935,"#460B5E"],[0.030100334448160522,"#470C5F"],[0.033444816053511697,"#470E61"],[0.036789297658862866,"#470F62"],[0.040133779264214041,"#471063"],[0.043478260869565209,"#471164"],[0.046822742474916385,"#471365"],[0.050167224080267553,"#481467"],[0.053511705685618728,"#481568"],[0.056856187290969896,"#481768"],[0.060200668896321072,"#481769"],[0.06354515050167224,"#48186A"],[0.066889632107023408,"#481A6C"],[0.070234113712374577,"#481B6D"],[0.073578595317725745,"#481C6E"],[0.076923076923076913,"#481D6F"],[0.080267558528428082,"#481E6F"],[0.083612040133779264,"#481F70"],[0.086956521739130432,"#482071"],[0.090301003344481601,"#482173"],[0.093645484949832769,"#482374"],[0.096989966555183937,"#482475"],[0.10033444816053511,"#482576"],[0.10367892976588627,"#482576"],[0.10702341137123746,"#482777"],[0.11036789297658862,"#482878"],[0.11371237458193979,"#482979"],[0.11705685618729096,"#472A7A"],[0.12040133779264214,"#472B7A"],[0.12374581939799331,"#472D7B"],[0.12709030100334448,"#472D7B"],[0.13043478260869565,"#472E7C"],[0.13377926421404682,"#472F7D"],[0.13712374581939799,"#46307E"],[0.14046822742474915,"#46327E"],[0.14381270903010032,"#46337F"],[0.14715719063545149,"#463480"],[0.15050167224080266,"#463480"],[0.15384615384615383,"#453581"],[0.157190635451505,"#453781"],[0.16053511705685616,"#453882"],[0.16387959866220736,"#443983"],[0.16722408026755853,"#443A83"],[0.1705685618729097,"#443A83"],[0.17391304347826086,"#443C84"],[0.17725752508361203,"#433D84"],[0.1806020066889632,"#433E85"],[0.18394648829431437,"#423F85"],[0.18729096989966554,"#424086"],[0.19063545150501671,"#424186"],[0.19397993311036787,"#424186"],[0.19732441471571904,"#414387"],[0.20066889632107021,"#414487"],[0.20401337792642138,"#404588"],[0.20735785953177255,"#404688"],[0.21070234113712374,"#3F4788"],[0.21404682274247491,"#3F4889"],[0.21739130434782608,"#3F4889"],[0.22073578595317725,"#3E4989"],[0.22408026755852842,"#3E4A89"],[0.22742474916387959,"#3E4C8A"],[0.23076923076923075,"#3D4D8A"],[0.23411371237458192,"#3D4E8A"],[0.23745819397993312,"#3C4F8A"],[0.24080267558528429,"#3C4F8A"],[0.24414715719063546,"#3C508B"],[0.24749163879598662,"#3B518B"],[0.25083612040133779,"#3B528B"],[0.25418060200668896,"#3A538B"],[0.25752508361204013,"#3A548C"],[0.2608695652173913,"#39558C"],[0.26421404682274247,"#39558C"],[0.26755852842809363,"#39568C"],[0.2709030100334448,"#38588C"],[0.27424749163879597,"#38598C"],[0.27759197324414714,"#375A8C"],[0.28093645484949831,"#375B8D"],[0.28428093645484948,"#375B8D"],[0.28762541806020064,"#365C8D"],[0.29096989966555181,"#365D8D"],[0.29431438127090298,"#355E8D"],[0.29765886287625415,"#355F8D"],[0.30100334448160532,"#34608D"],[0.30434782608695649,"#34618D"],[0.30769230769230765,"#34618D"],[0.31103678929765882,"#33628D"],[0.31438127090300999,"#33638D"],[0.31772575250836116,"#32648E"],[0.32107023411371233,"#32658E"],[0.32441471571906355,"#31668E"],[0.32775919732441472,"#31678E"],[0.33110367892976589,"#31678E"],[0.33444816053511706,"#31688E"],[0.33779264214046822,"#30698E"],[0.34113712374581939,"#306A8E"],[0.34448160535117056,"#2F6B8E"],[0.34782608695652173,"#2F6C8E"],[0.3511705685618729,"#2E6D8E"],[0.35451505016722407,"#2E6D8E"],[0.35785953177257523,"#2E6E8E"],[0.3612040133779264,"#2E6F8E"],[0.36454849498327757,"#2D708E"],[0.36789297658862874,"#2D718E"],[0.37123745819397991,"#2C718E"],[0.37458193979933108,"#2C728E"],[0.37792642140468224,"#2C728E"],[0.38127090301003341,"#2C738E"],[0.38461538461538458,"#2B748E"],[0.38795986622073575,"#2B758E"],[0.39130434782608692,"#2A768E"],[0.39464882943143809,"#2A778E"],[0.39799331103678925,"#2A778E"],[0.40133779264214042,"#2A788E"],[0.40468227424749159,"#29798E"],[0.40802675585284276,"#297A8E"],[0.41137123745819393,"#297B8E"],[0.4147157190635451,"#287C8E"],[0.41806020066889626,"#287D8E"],[0.42140468227424749,"#287D8E"],[0.42474916387959866,"#277E8E"],[0.42809364548494983,"#277F8E"],[0.43143812709030099,"#27808E"],[0.43478260869565216,"#26818E"],[0.43812709030100333,"#26828E"],[0.4414715719063545,"#26828E"],[0.44481605351170567,"#26828E"],[0.44816053511705684,"#25838E"],[0.451505016722408,"#25848E"],[0.45484949832775917,"#25858E"],[0.45819397993311034,"#24868E"],[0.46153846153846151,"#24878E"],[0.46488294314381268,"#23888E"],[0.46822742474916385,"#23888E"],[0.47157190635451501,"#23898E"],[0.47491638795986624,"#238A8D"],[0.47826086956521741,"#228B8D"],[0.48160535117056857,"#228C8D"],[0.48494983277591974,"#228D8D"],[0.48829431438127091,"#218E8D"],[0.49163879598662208,"#218E8D"],[0.49498327759197325,"#218F8D"],[0.49832775919732442,"#21908D"],[0.50167224080267558,"#21918C"],[0.50501672240802675,"#20928C"],[0.50836120401337792,"#20928C"],[0.51170568561872909,"#20928C"],[0.51505016722408026,"#20938C"],[0.51839464882943143,"#1F948C"],[0.52173913043478259,"#1F958B"],[0.52508361204013376,"#1F968B"],[0.52842809364548493,"#1F978B"],[0.5317725752508361,"#1F988B"],[0.53511705685618727,"#1F988B"],[0.53846153846153844,"#1F998A"],[0.5418060200668896,"#1F9A8A"],[0.54515050167224077,"#1E9B8A"],[0.54849498327759194,"#1E9C89"],[0.55183946488294311,"#1E9D89"],[0.55518394648829428,"#1F9E89"],[0.55852842809364545,"#1F9E89"],[0.56187290969899661,"#1F9F88"],[0.56521739130434778,"#1FA088"],[0.56856187290969895,"#1FA188"],[0.57190635451505012,"#1FA187"],[0.57525083612040129,"#1FA287"],[0.57859531772575246,"#20A386"],[0.58193979933110362,"#20A386"],[0.58528428093645479,"#20A486"],[0.58862876254180596,"#21A585"],[0.59197324414715713,"#21A685"],[0.5953177257525083,"#22A785"],[0.59866220735785947,"#22A884"],[0.60200668896321063,"#23A983"],[0.6053511705685618,"#23A983"],[0.60869565217391297,"#24AA83"],[0.61204013377926414,"#25AB82"],[0.61538461538461531,"#25AC82"],[0.61872909698996648,"#26AD81"],[0.62207357859531764,"#27AD81"],[0.62541806020066881,"#27AD81"],[0.62876254180601998,"#28AE80"],[0.63210702341137115,"#29AF7F"],[0.63545150501672232,"#2AB07F"],[0.63879598662207349,"#2CB17E"],[0.64214046822742465,"#2DB27D"],[0.64548494983277593,"#2EB37C"],[0.6488294314381271,"#2EB37C"],[0.65217391304347827,"#30B47C"],[0.65551839464882944,"#31B57B"],[0.65886287625418061,"#32B67A"],[0.66220735785953178,"#34B679"],[0.66555183946488294,"#35B779"],[0.66889632107023411,"#36B878"],[0.67224080267558528,"#37B878"],[0.67558528428093645,"#39B977"],[0.67892976588628762,"#3ABA76"],[0.68227424749163879,"#3BBB75"],[0.68561872909698995,"#3DBC74"],[0.68896321070234112,"#3EBC73"],[0.69230769230769229,"#40BD72"],[0.69565217391304346,"#41BD72"],[0.69899665551839463,"#42BE71"],[0.7023411371237458,"#44BF70"],[0.70568561872909696,"#46C06F"],[0.70903010033444813,"#48C16E"],[0.7123745819397993,"#49C16D"],[0.71571906354515047,"#4BC26C"],[0.71906354515050164,"#4DC26C"],[0.72240802675585281,"#4EC36B"],[0.72575250836120397,"#50C46A"],[0.72909698996655514,"#52C569"],[0.73244147157190631,"#54C568"],[0.73578595317725748,"#55C667"],[0.73913043478260865,"#57C666"],[0.74247491638795982,"#59C765"],[0.74581939799331098,"#5AC864"],[0.74916387959866215,"#5CC863"],[0.75250836120401332,"#5EC962"],[0.75585284280936449,"#5FCA61"],[0.75919732441471566,"#62CB5F"],[0.76254180602006683,"#64CB5F"],[0.76588628762541799,"#66CB5D"],[0.76923076923076916,"#67CC5C"],[0.77257525083612033,"#69CD5B"],[0.7759197324414715,"#6CCD5A"],[0.77926421404682267,"#6DCE59"],[0.78260869565217384,"#6FCF57"],[0.785953177257525,"#71CF57"],[0.78929765886287617,"#74D055"],[0.79264214046822734,"#75D054"],[0.79598662207357851,"#77D153"],[0.79933110367892968,"#79D151"],[0.80267558528428085,"#7BD250"],[0.80602006688963201,"#7ED34F"],[0.80936454849498318,"#80D34E"],[0.81270903010033435,"#82D34D"],[0.81605351170568552,"#84D44B"],[0.81939799331103669,"#86D549"],[0.82274247491638786,"#88D548"],[0.82608695652173902,"#8AD647"],[0.82943143812709019,"#8DD645"],[0.83277591973244136,"#8FD644"],[0.83612040133779253,"#91D743"],[0.83946488294314381,"#93D741"],[0.84280936454849498,"#95D840"],[0.84615384615384615,"#97D83E"],[0.84949832775919731,"#9AD93D"],[0.85284280936454848,"#9CD93C"],[0.85618729096989965,"#9ED93A"],[0.85953177257525082,"#A0DA39"],[0.86287625418060199,"#A2DA37"],[0.86622073578595316,"#A5DB36"],[0.86956521739130432,"#A7DB35"],[0.87290969899665549,"#A9DC33"],[0.87625418060200666,"#ABDC31"],[0.87959866220735783,"#AEDC30"],[0.882943143812709,"#B0DD2F"],[0.88628762541806017,"#B2DD2D"],[0.88963210702341133,"#B5DE2B"],[0.8929765886287625,"#B7DE2A"],[0.89632107023411367,"#B9DE28"],[0.89966555183946484,"#BBDE27"],[0.90301003344481601,"#BEDF26"],[0.90635451505016718,"#C0DF25"],[0.90969899665551834,"#C2DF23"],[0.91304347826086951,"#C4E021"],[0.91638795986622068,"#C7E020"],[0.91973244147157185,"#C9E11F"],[0.92307692307692302,"#CBE11E"],[0.92642140468227419,"#CEE11D"],[0.92976588628762535,"#D0E11C"],[0.93311036789297652,"#D2E21B"],[0.93645484949832769,"#D4E21A"],[0.93979933110367886,"#D7E219"],[0.94314381270903003,"#D9E319"],[0.94648829431438131,"#DBE319"],[0.94983277591973247,"#DDE318"],[0.95317725752508364,"#DFE318"],[0.95652173913043481,"#E2E418"],[0.95986622073578598,"#E4E419"],[0.96321070234113715,"#E6E419"],[0.96655518394648832,"#E8E419"],[0.96989966555183948,"#EBE51A"],[0.97324414715719065,"#EDE51B"],[0.97658862876254182,"#EFE51C"],[0.97993311036789299,"#F1E51D"],[0.98327759197324416,"#F3E61E"],[0.98662207357859533,"#F5E61F"],[0.98996655518394649,"#F7E620"],[0.99331103678929766,"#F9E622"],[0.99665551839464883,"#FBE723"],[1,"#FDE725"]],"colorbar":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"thickness":23.039999999999996,"title":null,"titlefont":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"tickmode":"array","ticktext":["0.00","0.25","0.50","0.75","1.00"],"tickvals":[0.17298328654845951,0.3793207982446779,0.5856583099408964,0.79199582163711479,0.99833333333333329],"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"ticklen":2,"len":0.5}},"xaxis":"x","yaxis":"y2","frame":null},{"x":[1.80488435520724,1.80488435520724,null,1.80488435520724,1.3278996104418288,null,1.3278996104418288,1.3278996104418288,null,1.3278996104418288,0,null,1.3278996104418288,1.3278996104418288,null,1.3278996104418288,1.0747042547199981,null,1.0747042547199981,1.0747042547199981,null,1.0747042547199981,0,null,1.0747042547199981,1.0747042547199981,null,1.0747042547199981,0,null,1.80488435520724,1.80488435520724,null,1.80488435520724,1.3635687439839845,null,1.3635687439839845,1.3635687439839845,null,1.3635687439839845,0,null,1.3635687439839845,1.3635687439839845,null,1.3635687439839845,0],"y":[3.125,1.75,null,1.75,1.75,null,1.75,1,null,1,1,null,1.75,2.5,null,2.5,2.5,null,2.5,2,null,2,2,null,2.5,3,null,3,3,null,3.125,4.5,null,4.5,4.5,null,4.5,4,null,4,4,null,4.5,5,null,5,5],"text":["y: 1.804884","y: 1.804884",null,"y: 1.804884","y: 1.804884",null,"y: 1.327900","y: 1.327900",null,"y: 1.327900","y: 1.327900",null,"y: 1.327900","y: 1.327900",null,"y: 1.327900","y: 1.327900",null,"y: 1.074704","y: 1.074704",null,"y: 1.074704","y: 1.074704",null,"y: 1.074704","y: 1.074704",null,"y: 1.074704","y: 1.074704",null,"y: 1.804884","y: 1.804884",null,"y: 1.804884","y: 1.804884",null,"y: 1.363569","y: 1.363569",null,"y: 1.363569","y: 1.363569",null,"y: 1.363569","y: 1.363569",null,"y: 1.363569","y: 1.363569"],"type":"scatter","mode":"lines","line":{"width":2.2677165354330708,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x2","yaxis":"y2","hoverinfo":"text","frame":null},{"x":[1.80488435520724,1.3278996104418288,0,1.0747042547199981,0,0,1.3635687439839845,0,0],"y":[3.125,1.75,1,2.5,2,3,4.5,4,5],"text":["y: 1.804884","y: 1.327900","y: 0.000000","y: 1.074704","y: 0.000000","y: 0.000000","y: 1.363569","y: 0.000000","y: 0.000000"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"transparent","opacity":1,"size":null,"symbol":null,"line":{"width":1.8897637795275593,"color":"transparent"}},"hoveron":"points","showlegend":false,"xaxis":"x2","yaxis":"y2","hoverinfo":"text","frame":null}],"layout":{"xaxis":{"domain":[0,0.80000000000000004],"automargin":true,"type":"linear","autorange":false,"range":[0.5,5.5],"tickmode":"array","ticktext":["fPSA ng/ml","P_size_numeric","ACT","age","gleason_score_numeric"],"tickvals":[1,2,3,4,5],"categoryorder":"array","categoryarray":["fPSA ng/ml","P_size_numeric","ACT","age","gleason_score_numeric"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":13.283520132835198},"tickangle":-45,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176002,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y2","title":"","hoverformat":".2f"},"xaxis2":{"domain":[0.80000000000000004,1],"automargin":true,"showticklabels":false,"showgrid":false,"zeroline":false,"anchor":"y2","type":"linear","autorange":false,"range":[0,1.80488435520724],"tickmode":"array","ticktext":["0.0","0.5","1.0","1.5"],"tickvals":[0,0.5,1,1.5],"categoryorder":"array","categoryarray":["0.0","0.5","1.0","1.5"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"tickfont":{"color":null,"family":null,"size":0},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"gridcolor":null,"gridwidth":0,"title":{"text":"","font":{"color":null,"family":null,"size":0}},"hoverformat":".2f"},"yaxis2":{"domain":[0,0.80000000000000004],"automargin":true,"type":"linear","autorange":false,"range":[0.5,5.5],"tickmode":"array","ticktext":["fPSA ng/ml","P_size_numeric","ACT","age","gleason_score_numeric"],"tickvals":[1,2,3,4,5],"categoryorder":"array","categoryarray":["fPSA ng/ml","P_size_numeric","ACT","age","gleason_score_numeric"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":13.283520132835205},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176002,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":"","hoverformat":".2f"},"yaxis":{"domain":[0.80000000000000004,1],"automargin":true,"showticklabels":false,"showgrid":false,"zeroline":false,"anchor":"x","type":"linear","autorange":false,"range":[0,1.80488435520724],"tickmode":"array","ticktext":["0.0","0.5","1.0","1.5"],"tickvals":[0,0.5,1,1.5],"categoryorder":"array","categoryarray":["0.0","0.5","1.0","1.5"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"tickfont":{"color":null,"family":null,"size":0},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"gridcolor":null,"gridwidth":0,"title":{"text":"","font":{"color":null,"family":null,"size":0}},"hoverformat":".2f"},"annotations":[],"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":0.80000000000000004,"y0":0.80000000000000004,"y1":1},{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":0.80000000000000004,"y0":0,"y1":0.80000000000000004},{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0.80000000000000004,"x1":1,"y0":0,"y1":0.80000000000000004}],"images":[],"margin":{"t":30,"r":null,"b":167.37235367372358,"l":167.37235367372358},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"y":1,"yanchor":"top"},"hovermode":"closest","barmode":"relative","paper_bgcolor":"rgba(255,255,255,1)","title":"Correlation Matrix of Clinical V"},"attrs":{"662416604745":{"xend":{},"yend":{},"colour":{},"linetype":{},"size":{},"x":{},"y":{},"type":"scatter"},"662412895f11":{"colour":{},"shape":{},"size":{},"x":{},"y":{}},"662455f1659c":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20]},"6624119dde3":{"x":{},"y":{},"fill":{},"text":{},"type":"heatmap"},"66245f3b1799":{"xend":{},"yend":{},"colour":{},"linetype":{},"size":{},"x":{},"y":{},"type":"scatter"},"66244dbd224a":{"colour":{},"shape":{},"size":{},"x":{},"y":{}}},"source":"A","config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false,"displaylogo":false,"modeBarButtonsToRemove":["sendDataToCloud","select2d","lasso2d","autoScale2d","hoverClosestCartesian","hoverCompareCartesian","sendDataToCloud"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"subplot":true,"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+<div
+id="heatmap-for-visualizing-clinical-groupings-based-on-fpsa-and-treatment"
+class="section level3">
+<h3>5. Heatmap for Visualizing Clinical Groupings Based on fPSA and
+Treatment</h3>
+<p>Another useful visualization technique is a heatmap that highlights
+the relationships between clinical factors and fPSA levels across
+different Treatment and Grade groups. This can help identify trends or
+anomalies.</p>
+<pre class="r"><code># Creating a heatmap for fPSA across different Treatment and Grade categories
+
+library(tidyr)
+# Prepare the data
+cancer_data$Treatment[is.na(cancer_data$Treatment)] &lt;- &quot;Unknown&quot;
+cancer_data_clean &lt;- cancer_data %&gt;%
+  filter(!is.na(Treatment))
+
+heatmap_data &lt;- cancer_data_clean %&gt;%
+  group_by(Treatment, Grade) %&gt;%
+  summarise(mean_fPSA = mean(`fPSA ng/ml`, na.rm = TRUE)) %&gt;%
+  pivot_wider(names_from = Grade, values_from = mean_fPSA)
+
+# Reshape the data back to long format
+heatmap_data_long &lt;- heatmap_data %&gt;%
+  pivot_longer(cols = starts_with(&quot;grade&quot;), 
+               names_to = &quot;Grade&quot;, 
+               values_to = &quot;mean_fPSA&quot;)
+heatmap_data_long</code></pre>
+<pre><code># A tibble: 5 × 3
+# Groups:   Treatment [1]
+  Treatment Grade   mean_fPSA
+  &lt;chr&gt;     &lt;chr&gt;       &lt;dbl&gt;
+1 Unknown   grade 1      4.55
+2 Unknown   grade 2      3.27
+3 Unknown   grade 3      2.92
+4 Unknown   grade 4      2.72
+5 Unknown   grade 5      2.01</code></pre>
+<pre class="r"><code># Plotting the heatmap
+ggplot(heatmap_data_long, aes(x = Grade, y = Treatment, fill = mean_fPSA)) +
+  geom_tile() +
+  scale_fill_viridis() +
+  theme_minimal() +
+  labs(title = &quot;fPSA Levels by Treatment and Grade&quot;, x = &quot;Grade&quot;, y = &quot;Treatment&quot;)</code></pre>
+<p><img src="figure/FPSA.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="shapiro-wilk-test-for-normality" class="section level3">
+<h3>6. Shapiro-Wilk Test for Normality</h3>
+<p>Before applying statistical tests, it is essential to check if the
+data follow a normal distribution. The Shapiro-Wilk test is appropriate
+for this.</p>
+<pre class="r"><code># Shapiro-Wilk normality test for fPSA in the cancer group
+
+shapiro_test &lt;- shapiro.test(cancer_data$`fPSA ng/ml`)
+
+print(shapiro_test)</code></pre>
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  cancer_data$`fPSA ng/ml`
+W = 0.86388, p-value = 4.003e-08</code></pre>
+</div>
+<div id="non-parametric-tests-if-the-data-is-not-normal"
+class="section level3">
+<h3>7. Non-Parametric Tests (if the data is not normal)</h3>
+<p>If the normality test fails (p-value &lt; 0.05), it is better to use
+non-parametric tests such as Kruskal-Wallis (for factors with more than
+two levels) and Mann-Whitney U test (for comparisons between two
+groups).</p>
+<pre class="r"><code>#Kruskal-Wallis Test
+
+# Kruskal-Wallis test for fPSA vs Grade
+
+kruskal_test_grade &lt;- kruskal.test(`fPSA ng/ml` ~ Grade, data = cancer_data)
+
+print(kruskal_test_grade)</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  fPSA ng/ml by Grade
+Kruskal-Wallis chi-squared = 2.497, df = 4, p-value = 0.6452</code></pre>
+<pre class="r"><code># Kruskal-Wallis test for fPSA vs Gleason Score
+
+kruskal_test_gleason &lt;- kruskal.test(`fPSA ng/ml` ~ `gleasons score`, data = cancer_data)
+
+print(kruskal_test_gleason)</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  fPSA ng/ml by gleasons score
+Kruskal-Wallis chi-squared = 1.6444, df = 3, p-value = 0.6494</code></pre>
+<p>These non-parametric tests allow us to analyze whether the
+distributions of fPSA differ significantly across groups.</p>
+</div>
+<div id="multiple-linear-regression" class="section level3">
+<h3>8.Multiple Linear Regression</h3>
+<p>Multiple linear regression allows us to model the relationship
+between several independent variables and the dependent variable
+fPSA.</p>
+<pre class="r"><code># Multiple linear regression for fPSA based on Treatment, Grade, and Gleason Score
+
+lm_fPSA &lt;- lm(`fPSA ng/ml` ~ Grade + `gleasons score`, data = cancer_data)
+
+summary(lm_fPSA)</code></pre>
+<pre><code>
+Call:
+lm(formula = `fPSA ng/ml` ~ Grade + `gleasons score`, data = cancer_data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.0500 -1.9155 -0.7125  1.3345  7.8500 
+
+Coefficients: (3 not defined because of singularities)
+                      Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)             4.5500     0.8524   5.338 6.38e-07 ***
+Gradegrade 2           -1.2804     0.9896  -1.294   0.1988    
+Gradegrade 3           -1.6348     0.9501  -1.721   0.0886 .  
+Gradegrade 4           -1.8333     0.9842  -1.863   0.0656 .  
+Gradegrade 5           -2.5417     1.1004  -2.310   0.0231 *  
+`gleasons score`3+4=7       NA         NA      NA       NA    
+`gleasons score`4+3=7       NA         NA      NA       NA    
+`gleasons score`4+4=8       NA         NA      NA       NA    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.411 on 95 degrees of freedom
+Multiple R-squared:  0.05924,   Adjusted R-squared:  0.01963 
+F-statistic: 1.496 on 4 and 95 DF,  p-value: 0.2097</code></pre>
+<p>This helps identify the relative impact of each factor ( Grade,
+Gleason Score) on fPSA levels.</p>
+</div>
+</div>
+<div id="part-3-comparison-between-psa-fpsa-and-cpsa"
+class="section level2">
+<h2>Part 3: Comparison Between PSA, FPSA, and CPSA</h2>
+<p>To explore the complex relationships between PSA, fPSA, and cPSA, as
+well as their connection to factors such as age and group, we will use
+advanced statistical methods. These methods provide a better
+understanding of interactions between multiple variables
+simultaneously.</p>
+<div id="multivariate-analysis-of-variance-manova"
+class="section level3">
+<h3>1. Multivariate Analysis of Variance (MANOVA)</h3>
+<p>MANOVA allows us to simultaneously analyze how the factors age, ACT,
+P.size, and group affect multiple dependent variables (e.g., PSA, fPSA,
+cPSA). This can help us assess if these factors jointly influence the
+biomarkers across different groups.</p>
+<pre class="r"><code># MANOVA analysis: comparing age, ACT, P.size, and group
+manova_result &lt;- manova(cbind(`PSA ng/ml`, `fPSA ng/ml`, `cPSA ng/ml`) ~ age + ACT + `P. size` + participants, data = data_1_final)
+manova_result </code></pre>
+<pre><code>Call:
+   manova(cbind(`PSA ng/ml`, `fPSA ng/ml`, `cPSA ng/ml`) ~ age + 
+    ACT + `P. size` + participants, data = data_1_final)
+
+Terms:
+                     age      ACT `P. size` participants Residuals
+PSA ng/ml        2002.83  8469.97      0.00      3347.76  73015.78
+fPSA ng/ml         10.70    28.62     34.17         0.85   1377.49
+cPSA ng/ml       1720.72  9483.38     34.09      3455.19  69099.00
+Deg. of Freedom        1        1         1            1       195
+
+Residual standard errors: 19.35045 2.657832 18.82429
+Estimated effects may be unbalanced
+100 observations deleted due to missingness</code></pre>
+</div>
+<div id="multiple-linear-regression-1" class="section level3">
+<h3>2. Multiple Linear Regression</h3>
+<p>Multiple regression models can assess the individual effect of age,
+ACT, and P.size on each of the biomarkers (PSA, fPSA, cPSA) separately,
+while accounting for the interaction with group.</p>
+<pre class="r"><code># Multiple linear regression models for each PSA variable
+lm_psa &lt;- lm(`PSA ng/ml` ~ age + ACT + `P. size` + participants, data = data_1_final)
+lm_fpsa &lt;- lm(`fPSA ng/ml` ~ age + ACT + `P. size` + participants, data = data_1_final)
+lm_cpsa &lt;- lm(`cPSA ng/ml` ~ age + ACT + `P. size` + participants, data = data_1_final)
+
+# Summary of regression results for each biomarker
+summary(lm_psa)</code></pre>
+<pre><code>
+Call:
+lm(formula = `PSA ng/ml` ~ age + ACT + `P. size` + participants, 
+    data = data_1_final)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-31.499 -13.485  -2.642   6.572  66.687 
+
+Coefficients:
+                       Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)           32.701662   8.854218   3.693 0.000287 ***
+age                   -0.310141   0.112786  -2.750 0.006524 ** 
+ACT                    0.004661   0.122742   0.038 0.969745    
+`P. size`              0.056778   0.070457   0.806 0.421316    
+participantsP .cancer 15.535515   5.195647   2.990 0.003148 ** 
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 19.35 on 195 degrees of freedom
+  (100 observations deleted due to missingness)
+Multiple R-squared:  0.1592,    Adjusted R-squared:  0.1419 
+F-statistic: 9.227 on 4 and 195 DF,  p-value: 7.545e-07</code></pre>
+<pre class="r"><code>summary(lm_fpsa)</code></pre>
+<pre><code>
+Call:
+lm(formula = `fPSA ng/ml` ~ age + ACT + `P. size` + participants, 
+    data = data_1_final)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.5558 -1.9068 -0.9035  1.4310  9.0024 
+
+Coefficients:
+                       Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)            4.247626   1.216149   3.493 0.000592 ***
+age                   -0.016038   0.015491  -1.035 0.301815    
+ACT                   -0.012243   0.016859  -0.726 0.468575    
+`P. size`              0.019594   0.009678   2.025 0.044263 *  
+participantsP .cancer -0.247311   0.713635  -0.347 0.729302    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.658 on 195 degrees of freedom
+  (100 observations deleted due to missingness)
+Multiple R-squared:  0.05121,   Adjusted R-squared:  0.03175 
+F-statistic: 2.631 on 4 and 195 DF,  p-value: 0.03563</code></pre>
+<pre class="r"><code>summary(lm_cpsa)</code></pre>
+<pre><code>
+Call:
+lm(formula = `cPSA ng/ml` ~ age + ACT + `P. size` + participants, 
+    data = data_1_final)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-28.647 -13.145  -3.353   5.465  66.625 
+
+Coefficients:
+                      Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept)           28.45404    8.61346   3.303  0.00114 **
+age                   -0.29410    0.10972  -2.681  0.00798 **
+ACT                    0.01690    0.11940   0.142  0.88756   
+`P. size`              0.03718    0.06854   0.542  0.58810   
+participantsP .cancer 15.78283    5.05437   3.123  0.00207 **
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 18.82 on 195 degrees of freedom
+  (100 observations deleted due to missingness)
+Multiple R-squared:  0.1754,    Adjusted R-squared:  0.1584 
+F-statistic: 10.37 on 4 and 195 DF,  p-value: 1.241e-07</code></pre>
+</div>
+<div id="comparison-of-group-means-using-anova-or-t-tests"
+class="section level3">
+<h3>3. Comparison of Group Means Using ANOVA or T-tests</h3>
+<p>We can compare how age, ACT, and P.size differ between Cancer and
+Non-Cancer groups using ANOVA (for multiple groups) or T-tests (for two
+groups).</p>
+<p>#a. T-test (If comparing two groups like Cancer vs Non-Cancer</p>
+<pre class="r"><code># T-test to compare age, ACT, and P.size between the Cancer and Non-Cancer groups
+# Create a new factor for Cancer vs Non-Cancer
+data_1_final$Cancer_Group &lt;- ifelse(data_1_final$participants == &quot;P .cancer&quot;, &quot;Cancer&quot;, &quot;Non-Cancer&quot;)
+
+# T-test to compare age between Cancer and Non-Cancer groups
+t_test_age &lt;- t.test(age ~ Cancer_Group, data = data_1_final)
+
+# T-test for ACT between Cancer and Non-Cancer groups
+t_test_ACT &lt;- t.test(ACT ~ Cancer_Group, data = data_1_final)
+
+# T-test for P.size between Cancer and Non-Cancer groups
+t_test_Psize &lt;- t.test(`P. size` ~ Cancer_Group, data = data_1_final)
+
+# Display results
+t_test_age</code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  age by Cancer_Group
+t = 1.888, df = 168.86, p-value = 0.06074
+alternative hypothesis: true difference in means between group Cancer and group Non-Cancer is not equal to 0
+95 percent confidence interval:
+ -0.1233874  5.5333874
+sample estimates:
+    mean in group Cancer mean in group Non-Cancer 
+                  71.000                   68.295 </code></pre>
+<pre class="r"><code>t_test_ACT</code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  ACT by Cancer_Group
+t = 22.929, df = 114.23, p-value &lt; 2.2e-16
+alternative hypothesis: true difference in means between group Cancer and group Non-Cancer is not equal to 0
+95 percent confidence interval:
+ 31.58105 37.55394
+sample estimates:
+    mean in group Cancer mean in group Non-Cancer 
+                55.52833                 20.96084 </code></pre>
+<pre class="r"><code>t_test_Psize</code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  P. size by Cancer_Group
+t = -2.7765, df = 176.83, p-value = 0.006087
+alternative hypothesis: true difference in means between group Cancer and group Non-Cancer is not equal to 0
+95 percent confidence interval:
+ -13.378269  -2.261731
+sample estimates:
+    mean in group Cancer mean in group Non-Cancer 
+                   40.28                    48.10 </code></pre>
+<pre class="r"><code>#b. ANOVA (If comparing more than two groups):
+
+# ANOVA to compare age, ACT, and P.size across multiple groups
+anova_age &lt;- aov(age ~ Cancer_Group, data = data_1_final)
+anova_act &lt;- aov(ACT ~ Cancer_Group, data = data_1_final)
+anova_psize &lt;- aov(`P. size` ~ Cancer_Group, data = data_1_final)
+
+# Display ANOVA results
+summary(anova_age)</code></pre>
+<pre><code>              Df Sum Sq Mean Sq F value Pr(&gt;F)  
+Cancer_Group   1    488   487.8   4.035 0.0455 *
+Residuals    298  36028   120.9                 
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>summary(anova_act)</code></pre>
+<pre><code>              Df Sum Sq Mean Sq F value Pr(&gt;F)    
+Cancer_Group   1  79661   79661   870.1 &lt;2e-16 ***
+Residuals    298  27284      92                   
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>summary(anova_psize)</code></pre>
+<pre><code>              Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+Cancer_Group   1   3058  3057.6   7.709 0.00602 **
+Residuals    198  78533   396.6                   
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+100 observations deleted due to missingness</code></pre>
+</div>
+<div id="correlation-analysis-1" class="section level3">
+<h3>4. Correlation Analysis</h3>
+<p>To assess the strength and direction of the relationship between age,
+ACT, P.size, and PSA, fPSA, and cPSA, we can perform correlation
+analysis.</p>
+<pre class="r"><code># Calculate correlation matrix between age, ACT, P.size, and biomarkers
+cor_matrix &lt;- cor(data_1_final[, c(&quot;age&quot;, &quot;ACT&quot;, &quot;P. size&quot;, &quot;PSA ng/ml&quot;, &quot;fPSA ng/ml&quot;, &quot;cPSA ng/ml&quot;)], use = &quot;complete.obs&quot;)
+
+# Display correlation matrix
+cor_matrix</code></pre>
+<pre><code>                   age         ACT     P. size   PSA ng/ml  fPSA ng/ml
+age         1.00000000  0.07740149 -0.01638971 -0.15186981 -0.08585924
+ACT         0.07740149  1.00000000 -0.05531594  0.29962116 -0.14663917
+P. size    -0.01638971 -0.05531594  1.00000000 -0.01441754  0.16218624
+PSA ng/ml  -0.15186981  0.29962116 -0.01441754  1.00000000  0.20020129
+fPSA ng/ml -0.08585924 -0.14663917  0.16218624  0.20020129  1.00000000
+cPSA ng/ml -0.14330201  0.32431706 -0.03602576  0.99164904  0.07217457
+            cPSA ng/ml
+age        -0.14330201
+ACT         0.32431706
+P. size    -0.03602576
+PSA ng/ml   0.99164904
+fPSA ng/ml  0.07217457
+cPSA ng/ml  1.00000000</code></pre>
+</div>
+<div id="visualization" class="section level3">
+<h3>5. Visualization</h3>
+<p>To visually compare the differences in age, ACT, and P.size across
+Cancer and Non-Cancer groups, boxplots and scatter plots can be
+helpful.</p>
+<pre class="r"><code># Boxplot of age, ACT, and P.size by group
+library(ggplot2)
+
+ggplot(data_1_final, aes(x = participants, y = age, fill = participants)) +
+  geom_boxplot() +
+  labs(title = &quot;Age by Group&quot;, x = &quot;Group&quot;, y = &quot;Age&quot;)</code></pre>
+<p><img src="figure/FPSA.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(data_1_final, aes(x = participants, y = ACT, fill = participants)) +
+  geom_boxplot() +
+  labs(title = &quot;ACT by Group&quot;, x = &quot;participants&quot;, y = &quot;ACT&quot;)</code></pre>
+<p><img src="figure/FPSA.Rmd/unnamed-chunk-17-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(data_1_final, aes(x = participants, y = `P. size`, fill = participants)) +
+  geom_boxplot() +
+  labs(title = &quot;P.size by Group&quot;, x = &quot;participants&quot;, y = &quot;P. size&quot;)</code></pre>
+<p><img src="figure/FPSA.Rmd/unnamed-chunk-17-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Scatter plot of age vs PSA, fPSA, and cPSA
+ggplot(data_1_final, aes(x = age, y = `PSA ng/ml`, color = participants)) +
+  geom_point() +
+  labs(title = &quot;Age vs PSA&quot;, x = &quot;Age&quot;, y = &quot;PSA (ng/ml)&quot;)</code></pre>
+<p><img src="figure/FPSA.Rmd/unnamed-chunk-17-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(data_1_final, aes(x = age, y = `fPSA ng/ml`, color = participants)) +
+  geom_point() +
+  labs(title = &quot;Age vs fPSA&quot;, x = &quot;Age&quot;, y = &quot;fPSA (ng/ml)&quot;)</code></pre>
+<p><img src="figure/FPSA.Rmd/unnamed-chunk-17-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(data_1_final, aes(x = age, y = `cPSA ng/ml`, color = participants)) +
+  geom_point() +
+  labs(title = &quot;Age vs cPSA&quot;, x = &quot;Age&quot;, y = &quot;cPSA (ng/ml)&quot;)</code></pre>
+<p><img src="figure/FPSA.Rmd/unnamed-chunk-17-6.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.3.3 (2024-02-29 ucrt)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19045)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: Africa/Johannesburg
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] heatmaply_1.5.0   plotly_4.10.4     viridis_0.6.5     viridisLite_0.4.2
+ [5] tidyr_1.3.1       Rtsne_0.17        irlba_2.3.5.1     Matrix_1.6-5     
+ [9] pheatmap_1.0.12   factoextra_1.0.7  cluster_2.1.6     corrplot_0.92    
+[13] ggplot2_3.5.1     dplyr_1.1.4       readxl_1.4.3     
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.2.1   farver_2.1.2       fastmap_1.2.0      TSP_1.2-4         
+ [5] lazyeval_0.2.2     promises_1.3.0     digest_0.6.36      lifecycle_1.0.4   
+ [9] magrittr_2.0.3     compiler_4.3.3     rlang_1.1.4        sass_0.4.9        
+[13] tools_4.3.3        utf8_1.2.4         yaml_2.3.8         data.table_1.15.4 
+[17] knitr_1.48         labeling_0.4.3     htmlwidgets_1.6.4  plyr_1.8.9        
+[21] RColorBrewer_1.1-3 registry_0.5-1     ca_0.71.1          workflowr_1.7.1   
+[25] withr_3.0.1        purrr_1.0.2        grid_4.3.3         fansi_1.0.6       
+[29] git2r_0.33.0       colorspace_2.1-1   scales_1.3.0       iterators_1.0.14  
+[33] cli_3.6.2          rmarkdown_2.27     generics_0.1.3     rstudioapi_0.16.0 
+[37] httr_1.4.7         reshape2_1.4.4     cachem_1.1.0       stringr_1.5.1     
+[41] splines_4.3.3      assertthat_0.2.1   cellranger_1.1.0   vctrs_0.6.5       
+[45] webshot_0.5.5      jsonlite_1.8.8     seriation_1.5.6    ggrepel_0.9.5     
+[49] crosstalk_1.2.1    dendextend_1.17.1  foreach_1.5.2      jquerylib_0.1.4   
+[53] glue_1.7.0         codetools_0.2-20   stringi_1.8.4      gtable_0.3.5      
+[57] later_1.3.2        munsell_0.5.1      tibble_3.2.1       pillar_1.9.0      
+[61] htmltools_0.5.8.1  R6_2.5.1           rprojroot_2.0.4    evaluate_0.24.0   
+[65] lattice_0.22-6     highr_0.11         httpuv_1.6.15      bslib_0.8.0       
+[69] Rcpp_1.0.12        gridExtra_2.3      nlme_3.1-165       mgcv_1.9-1        
+[73] whisker_0.4.1      xfun_0.46          fs_1.6.4           pkgconfig_2.0.3   </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
